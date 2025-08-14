@@ -70,11 +70,16 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     setErrors(0)
     setTestComplete(false)
     setTestResult(null)
+    setUserInput('')
+    setText(getRandomText(language, testType === "words" ? testValue : undefined))
+    userInputRef.current = ''
+    textRef.current = text
+    errorsRef.current = 0
     lastCheckedIndex.current = 0
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
-  }, [testType, testValue])
+  }, [testType, testValue, language, text])
 
   const startTest = useCallback(() => {
     if (isActive) return
