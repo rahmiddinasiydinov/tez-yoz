@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
+import safeStorage from "./safe-storage"
 
 type Language = "uz" | "en" | "ru"
 
@@ -529,7 +530,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("uz")
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("interface-language") as Language
+    const savedLanguage = safeStorage.getItem("interface-language") as Language
     if (savedLanguage && translations[savedLanguage]) {
       setLanguage(savedLanguage)
     }
@@ -537,7 +538,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang)
-    localStorage.setItem("interface-language", lang)
+    safeStorage.setItem("interface-language", lang)
   }
 
   const t = (key: keyof Translations): string => {

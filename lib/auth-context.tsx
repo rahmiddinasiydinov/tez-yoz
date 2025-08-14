@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
+import safeStorage from "./safe-storage"
 
 export interface User {
   id: string
@@ -32,13 +33,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check for existing session on mount
-    const savedUser = localStorage.getItem("typeSpeed_user")
+    const savedUser = safeStorage.getJSON<User | null>("typeSpeed_user", null)
     if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch (error) {
-        localStorage.removeItem("typeSpeed_user")
-      }
+      setUser(savedUser)
+    } else {
+      // nothing
     }
     setIsLoading(false)
   }, [])
@@ -50,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Get stored users
-    const storedUsers = JSON.parse(localStorage.getItem("typeSpeed_users") || "[]")
+    const storedUsers = safeStorage.getJSON<any[]>("typeSpeed_users", [])
     const existingUser = storedUsers.find((u: any) => u.email === email)
 
     if (!existingUser) {
@@ -65,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { password: _, ...userWithoutPassword } = existingUser
     setUser(userWithoutPassword)
-    localStorage.setItem("typeSpeed_user", JSON.stringify(userWithoutPassword))
+    safeStorage.setJSON("typeSpeed_user", userWithoutPassword)
     setIsLoading(false)
 
     return { success: true }
@@ -82,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Get stored users
-    const storedUsers = JSON.parse(localStorage.getItem("typeSpeed_users") || "[]")
+    const storedUsers = safeStorage.getJSON<any[]>("typeSpeed_users", [])
 
     // Check if user already exists
     if (storedUsers.some((u: any) => u.email === email)) {
@@ -112,12 +111,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Save to storage
     storedUsers.push(newUser)
-    localStorage.setItem("typeSpeed_users", JSON.stringify(storedUsers))
+    safeStorage.setJSON("typeSpeed_users", storedUsers)
 
     // Set current user (without password)
     const { password: _, ...userWithoutPassword } = newUser
     setUser(userWithoutPassword)
-    localStorage.setItem("typeSpeed_user", JSON.stringify(userWithoutPassword))
+    safeStorage.setJSON("typeSpeed_user", userWithoutPassword)
     setIsLoading(false)
 
     return { success: true }
@@ -125,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("typeSpeed_user")
+    safeStorage.removeItem("typeSpeed_user")
   }
 
   return <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>{children}</AuthContext.Provider>

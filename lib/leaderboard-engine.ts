@@ -1,7 +1,8 @@
-'use client'
+"use client"
 
 import type { User } from "./auth-context"
 import { getUserTestResults, type DetailedTestResult } from "./statistics-engine"
+import safeStorage from "./safe-storage"
 
 export interface LeaderboardEntry {
   userId: string
@@ -99,7 +100,7 @@ export const getBadge = (rank: number, category: string): string | undefined => 
 
 export const generateLeaderboard = (filters: LeaderboardFilters): LeaderboardEntry[] => {
   // Get all users
-  const allUsers = JSON.parse(localStorage.getItem("typeSpeed_users") || "[]") as User[]
+  const allUsers = safeStorage.getJSON<User[]>("typeSpeed_users", []) as User[]
 
   if (allUsers.length === 0) return []
 

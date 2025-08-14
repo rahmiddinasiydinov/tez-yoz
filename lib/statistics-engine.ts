@@ -1,5 +1,6 @@
 'use client'
 import type { TestResult } from "./typing-engine"
+import safeStorage from "./safe-storage"
 
 export interface DetailedTestResult extends TestResult {
   id: string
@@ -31,7 +32,7 @@ export const saveTestResult = (result: TestResult, userId?: string): DetailedTes
   }
 
   // Get existing results
-  const existingResults = JSON.parse(localStorage.getItem("typeSpeed_testResults") || "[]")
+  const existingResults = safeStorage.getJSON<any[]>("typeSpeed_testResults", [])
 
   // Add new result
   existingResults.push(detailedResult)
@@ -40,13 +41,13 @@ export const saveTestResult = (result: TestResult, userId?: string): DetailedTes
   const userResults = existingResults.filter((r: DetailedTestResult) => r.userId === userId).slice(-100)
   const otherResults = existingResults.filter((r: DetailedTestResult) => r.userId !== userId)
 
-  localStorage.setItem("typeSpeed_testResults", JSON.stringify([...otherResults, ...userResults]))
+  safeStorage.setJSON("typeSpeed_testResults", [...otherResults, ...userResults])
 
   return detailedResult
 }
 
 export const getUserTestResults = (userId?: string): DetailedTestResult[] => {
-  const allResults = JSON.parse(localStorage.getItem("typeSpeed_testResults") || "[]")
+  const allResults = safeStorage.getJSON<DetailedTestResult[]>("typeSpeed_testResults", [])
   return allResults.filter((result: DetailedTestResult) => result.userId === userId)
 }
 
@@ -153,7 +154,7 @@ export const calculateStatistics = (userId?: string): StatisticsData => {
 }
 
 export const getGlobalStatistics = (): StatisticsData => {
-  const allResults = JSON.parse(localStorage.getItem("typeSpeed_testResults") || "[]")
+  const allResults = safeStorage.getJSON<DetailedTestResult[]>("typeSpeed_testResults", [])
 
   if (allResults.length === 0) {
     return {

@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
+import safeStorage from "./safe-storage"
 
 export interface TestSettings {
   testType: "time" | "words"
@@ -39,27 +40,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<TestSettings>(defaultSettings)
 
   useEffect(() => {
-    // Load settings from localStorage on mount
-    const savedSettings = localStorage.getItem("typeSpeed_settings")
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings)
-        setSettings({ ...defaultSettings, ...parsed })
-      } catch (error) {
-        console.error("Failed to parse saved settings:", error)
-      }
+    // Load settings from storage on mount
+    try {
+      const saved = safeStorage.getJSON<TestSettings>("typeSpeed_settings", defaultSettings)
+      setSettings({ ...defaultSettings, ...saved })
+    } catch (error) {
+      // ignore and keep defaults
     }
   }, [])
 
   const updateSettings = (newSettings: Partial<TestSettings>) => {
     const updatedSettings = { ...settings, ...newSettings }
     setSettings(updatedSettings)
-    localStorage.setItem("typeSpeed_settings", JSON.stringify(updatedSettings))
+    safeStorage.setJSON("typeSpeed_settings", updatedSettings)
   }
 
   const resetSettings = () => {
     setSettings(defaultSettings)
-    localStorage.setItem("typeSpeed_settings", JSON.stringify(defaultSettings))
+    safeStorage.setJSON("typeSpeed_settings", defaultSettings)
   }
 
   return (

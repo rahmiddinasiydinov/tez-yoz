@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
+import safeStorage from "@/lib/safe-storage"
 
 type Theme = "dark" | "light" | "system"
 
@@ -38,7 +39,7 @@ export function ThemeProvider({
 
   useEffect(() => {
     setMounted(true)
-    const stored = localStorage.getItem("theme") as Theme
+    const stored = safeStorage.getItem("theme") as Theme
     if (stored) {
       setTheme(stored)
     }
@@ -56,7 +57,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(systemTheme)
-    localStorage.setItem("theme", theme)
+    safeStorage.setItem("theme", theme)
   }, [theme, mounted])
 
   const value = {

@@ -20,6 +20,7 @@ import { useSettings } from "@/lib/settings-context"
 import { useI18n } from "@/lib/i18n-context"
 import { TestResults } from "./test-results"
 import Link from "next/link"
+import safeStorage from "@/lib/safe-storage"
 
 interface TypingTestProps {
   testType?: "time" | "words"
@@ -45,9 +46,11 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const textCharsRef = useRef<string[]>([])
   const userInputRef = useRef(userInput)
   const textRef = useRef(text)
+  const errorsRef = useRef(errors)
   const lastCheckedIndex = useRef(0);
   userInputRef.current = userInput
   textRef.current = text
+  errorsRef.current = errors
 
   useEffect(() => {
     console.log(userInput)
@@ -95,6 +98,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const completeTest = useCallback(() => {
     const userInput = userInputRef.current
     const text = textRef.current
+    const errors = errorsRef.current
 
     if (testComplete) return
 
@@ -163,7 +167,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     saveTestResult(result, user?.id)
 
     if (user) {
-      const currentUser = JSON.parse(localStorage.getItem("typeSpeed_user") || "{}")
+      const currentUser = safeStorage.getJSON<any>("typeSpeed_user", {})
       const updatedStats = {
         testsCompleted: currentUser.stats.testsCompleted + 1,
         bestWpm: Math.max(currentUser.stats.bestWpm, wpm),
@@ -178,7 +182,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
       }
 
       const updatedUser = { ...currentUser, stats: updatedStats }
-      localStorage.setItem("typeSpeed_user", JSON.stringify(updatedUser))
+      safeStorage.setJSON("typeSpeed_user", updatedUser)
 
       const users = JSON.parse(localStorage.getItem("typeSpeed_users") || "[]")
       const userIndex = users.findIndex((u: any) => u.id === user.id)
