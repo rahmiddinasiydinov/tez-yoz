@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -43,7 +43,15 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const inputRef = useRef<HTMLInputElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const textCharsRef = useRef<string[]>([])
-  const lastCheckedIndex = useRef(0)
+  const userInputRef = useRef(userInput)
+  const textRef = useRef(text)
+  const lastCheckedIndex = useRef(0);
+  userInputRef.current = userInput
+  textRef.current = text
+
+  useEffect(() => {
+    console.log(userInput)
+  }, [userInput]);
 
   useEffect(() => {
     const newText = getRandomText(language, testType === "words" ? testValue : undefined)
@@ -53,7 +61,6 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   }, [testType, testValue, language])
 
   const resetTest = useCallback(() => {
-    setUserInput("")
     setIsActive(false)
     setTimeLeft(testType === "time" ? testValue : 0)
     setStartTime(null)
@@ -86,6 +93,9 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   }, [isActive, testType])
 
   const completeTest = useCallback(() => {
+    const userInput = userInputRef.current
+    const text = textRef.current
+
     if (testComplete) return
 
     setIsActive(false)
@@ -182,13 +192,11 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
-
       if (!isActive && !testComplete && value.length > 0) {
         startTest()
       }
 
       if (testComplete) return
-
       setUserInput(value)
 
       if (testType === "time" && value.length > text.length - 50) {

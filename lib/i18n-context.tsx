@@ -541,7 +541,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }
 
   const t = (key: keyof Translations): string => {
-    return translations[language][key] || key
+    if (!key) return ""
+    const translation = translations[language][key]
+    return translation !== undefined ? translation : key
   }
 
   return (
@@ -564,3 +566,6 @@ export function useI18n() {
   }
   return context
 }
+
+
+

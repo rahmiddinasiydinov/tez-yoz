@@ -21,12 +21,13 @@ export function Navigation() {
   const { user, logout } = useAuth()
   const { t, language, setLanguage } = useI18n()
   const { theme, setTheme } = useTheme()
+  console.log(t)
 
   const navItems = [
-    { href: "/", label: t.test, icon: Keyboard },
-    { href: "/leaderboard", label: t.leaderboard, icon: Trophy },
-    { href: "/settings", label: t.settings, icon: Settings },
-    { href: "/profile", label: t.profile, icon: User },
+    { href: "/", label: t('test'), icon: Keyboard },
+    {href: "/leaderboard", label: t('leaderboard'), icon: Trophy},
+    {href: "/settings", label: t('settings'), icon: Settings},
+    {href: "/profile", label: t('profile'), icon: User},
   ]
 
   const languages = [
@@ -36,9 +37,9 @@ export function Navigation() {
   ]
 
   const themes = [
-    { value: "light", label: t.lightMode, icon: Sun },
-    { value: "dark", label: t.darkMode, icon: Moon },
-    { value: "system", label: t.systemMode, icon: Monitor },
+    { value: "light", label: t('lightMode'), icon: Sun },
+    {value: "dark", label: t('darkMode'), icon: Moon},
+    {value: "system", label: t('systemMode'), icon: Monitor},
   ]
 
   return (
@@ -107,7 +108,7 @@ export function Navigation() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logout} className="text-destructive">
                       <LogOut className="h-4 w-4 mr-2" />
-                      {t.signOut}
+                      {t('signOut')}
                     </DropdownMenuItem>
                   </>
                 )}
@@ -138,7 +139,7 @@ export function Navigation() {
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="sr-only">{t.theme}</span>
+                  <span className="sr-only">{t('theme')}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -163,7 +164,7 @@ export function Navigation() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <Globe className="h-4 w-4" />
-                  <span className="sr-only">{t.interfaceLanguage}</span>
+                  <span className="sr-only">{t('interfaceLanguage')}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -190,25 +191,25 @@ export function Navigation() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href="/profile">{t.viewProfile}</Link>
+                    <Link href="/profile">{t('viewProfile')}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings">{t.settings}</Link>
+                    <Link href="/settings">{t('settings')}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
-                    {t.signOut}
+                    {t('signOut')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
                 <Button variant="ghost" size="sm" asChild className="h-8">
-                  <Link href="/login">{t.login}</Link>
+                  <Link href="/login">{t('login')}</Link>
                 </Button>
                 <Button size="sm" asChild className="h-8">
-                  <Link href="/signup">{t.signup}</Link>
+                  <Link href="/signup">{t('signup')}</Link>
                 </Button>
               </div>
             )}
@@ -217,10 +218,10 @@ export function Navigation() {
           {!user && (
             <div className="md:hidden flex items-center space-x-1">
               <Button variant="ghost" size="sm" asChild className="h-8 text-xs px-2">
-                <Link href="/login">{t.login}</Link>
+                <Link href="/login">{t('login')}</Link>
               </Button>
               <Button size="sm" asChild className="h-8 text-xs px-2">
-                <Link href="/signup">{t.signup}</Link>
+                <Link href="/signup">{t('signup')}</Link>
               </Button>
             </div>
           )}
