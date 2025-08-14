@@ -1,3 +1,4 @@
+'use client'
 import type { TestResult } from "./typing-engine"
 
 export interface DetailedTestResult extends TestResult {

@@ -1,3 +1,5 @@
+'use client'
+
 import type { User } from "./auth-context"
 import { getUserTestResults, type DetailedTestResult } from "./statistics-engine"
 
