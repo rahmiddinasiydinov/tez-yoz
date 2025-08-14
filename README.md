@@ -1,2 +1,1 @@
-# tez-yoz
-# tez-yoz
+# TezYoz da tez yozing!
