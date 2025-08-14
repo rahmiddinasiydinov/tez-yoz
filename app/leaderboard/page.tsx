@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/navigation"
 import { Leaderboard } from "@/components/leaderboard"
 
 export default function LeaderboardPage() {
