@@ -1,0 +1,566 @@
+"use client"
+
+import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
+
+type Language = "uz" | "en" | "ru"
+
+interface Translations {
+  // Navigation
+  test: string
+  leaderboard: string
+  settings: string
+  profile: string
+  login: string
+  signup: string
+  signOut: string
+  viewProfile: string
+
+  // Test Interface
+  startTyping: string
+  timeLeft: string
+  wpm: string
+  accuracy: string
+  errors: string
+  words: string
+  restart: string
+  testComplete: string
+  reset: string
+  time: string
+  progress: string
+  seconds: string
+  clickToStart: string
+  startTypingInstruction: string
+  typingInstruction: string
+
+  // Settings
+  testType: string
+  timeMode: string
+  wordMode: string
+  language: string
+  theme: string
+  interfaceLanguage: string
+  darkMode: string
+  lightMode: string
+  systemMode: string
+
+  // Results
+  wordsPerMinute: string
+  totalWords: string
+  totalErrors: string
+  finalAccuracy: string
+  testDuration: string
+  consistency: string
+  hereAreResults: string
+  globalRanking: string
+  outOfAllPlayers: string
+  best: string
+  testsCompleted: string
+  viewLeaderboard: string
+  detailedStatistics: string
+  correctCharacters: string
+  totalCharacters: string
+  completedAt: string
+  tryAgain: string
+  shareResults: string
+  tipsToImprove: string
+  focusOnAccuracy: string
+  practiceTouchTyping: string
+  takeYourTime: string
+  regularPractice: string
+  tryDifferentLanguages: string
+  checkLeaderboard: string
+
+  // Ratings
+  excellent: string
+  good: string
+  average: string
+  needsPractice: string
+  perfect: string
+  needsWork: string
+
+  // Auth
+  username: string
+  email: string
+  password: string
+  confirmPassword: string
+  createAccount: string
+  signInToAccount: string
+  alreadyHaveAccount: string
+  dontHaveAccount: string
+
+  // Leaderboard
+  globalLeaderboard: string
+  rank: string
+  user: string
+  bestWpm: string
+  avgAccuracy: string
+  topTypists: string
+  seeHowYouRank: string
+  leaderboardFilters: string
+  category: string
+  timePeriod: string
+  rankings: string
+  competitors: string
+  noRankingsYet: string
+  completeTestsToAppear: string
+  you: string
+  avg: string
+  loginRequired: string
+  signInToSeeRanking: string
+  noRankingYet: string
+  completeTestsToGetRanked: string
+  yourCurrentRanking: string
+  in: string
+  averageAccuracy: string
+  testsDone: string
+  waysToImproveYourRanking: string
+  practiceRegularlyToImproveConsistency: string
+  completeMoreTestsToEstablishBetterAverage: string
+  workOnConsistency: string
+  tryDifferentLanguagesAndTestTypes: string
+  challengeYourselfWithLongerTests: string
+  tests: string
+  yourRanking: string
+
+  // Languages
+  "language.uzbek": string
+  "language.english": string
+  "language.russian": string
+  "language.spanish": string
+  "language.french": string
+  "language.german": string
+}
+
+const translations: Record<Language, Translations> = {
+  uz: {
+    // Navigation
+    test: "Test",
+    leaderboard: "Reyting",
+    settings: "Sozlamalar",
+    profile: "Profil",
+    login: "Kirish",
+    signup: "Ro'yxatdan o'tish",
+    signOut: "Chiqish",
+    viewProfile: "Profilni ko'rish",
+
+    // Test Interface
+    startTyping: "Yozishni boshlang...",
+    timeLeft: "Qolgan vaqt",
+    wpm: "So'z/daq",
+    accuracy: "Aniqlik",
+    errors: "Xatolar",
+    words: "So'zlar",
+    restart: "Qayta boshlash",
+    testComplete: "Test tugadi!",
+    reset: "Qayta o'rnatish",
+    time: "Vaqt",
+    progress: "Jarayon",
+    seconds: "soniya",
+    clickToStart: "Yozishni boshlash uchun matn maydonini bosing",
+    startTypingInstruction: "Birinchi harfni bosganingizda test avtomatik boshlanadi",
+    typingInstruction: "Yuqoridagi matnni imkon qadar tez va aniq yozing",
+
+    // Settings
+    testType: "Test turi",
+    timeMode: "Vaqt rejimi",
+    wordMode: "So'z rejimi",
+    language: "Matn tili",
+    theme: "Mavzu",
+    interfaceLanguage: "Interfeys tili",
+    darkMode: "Qorong'u",
+    lightMode: "Yorug'",
+    systemMode: "Tizim",
+
+    // Results
+    wordsPerMinute: "Daqiqada so'zlar",
+    totalWords: "Jami so'zlar",
+    totalErrors: "Jami xatolar",
+    finalAccuracy: "Yakuniy aniqlik",
+    testDuration: "Test davomiyligi",
+    consistency: "Barqarorlik",
+    hereAreResults: "Sizning natijalaringiz",
+    globalRanking: "Global reyting",
+    outOfAllPlayers: "barcha o'yinchilar orasida",
+    best: "eng yaxshi",
+    testsCompleted: "tugallangan testlar",
+    viewLeaderboard: "Reytingni ko'rish",
+    detailedStatistics: "Batafsil statistika",
+    correctCharacters: "To'g'ri belgilar",
+    totalCharacters: "Jami belgilar",
+    completedAt: "Tugallangan:",
+    tryAgain: "Qayta urinish",
+    shareResults: "Natijalarni ulashish",
+    tipsToImprove: "Yaxshilash bo'yicha maslahatlar",
+    focusOnAccuracy: "Avval aniqlikka e'tibor bering - tezlik amaliyot bilan keladi",
+    practiceTouchTyping: "Tezligingizni oshirish uchun ko'r yozishni mashq qiling",
+    takeYourTime: "Shoshilmang va qiyin so'zlarni ikki marta tekshiring",
+    regularPractice: "Muntazam mashq qilish - yozish mahoratingizni oshirishning kaliti",
+    tryDifferentLanguages: "Turli tillar va matn turlarini sinab ko'ring",
+    checkLeaderboard: "Boshqalar bilan qanday taqqoslashingizni ko'rish uchun reytingni tekshiring",
+
+    // Ratings
+    excellent: "A'lo",
+    good: "Yaxshi",
+    average: "O'rtacha",
+    needsPractice: "Mashq kerak",
+    perfect: "Mukammal",
+    needsWork: "Yaxshilash kerak",
+
+    // Auth
+    username: "Foydalanuvchi nomi",
+    email: "Email",
+    password: "Parol",
+    confirmPassword: "Parolni tasdiqlang",
+    createAccount: "Hisob yaratish",
+    signInToAccount: "Hisobga kirish",
+    alreadyHaveAccount: "Hisobingiz bormi?",
+    dontHaveAccount: "Hisobingiz yo'qmi?",
+
+    // Leaderboard
+    globalLeaderboard: "Global reyting",
+    rank: "O'rin",
+    user: "Foydalanuvchi",
+    bestWpm: "Eng yaxshi WPM",
+    avgAccuracy: "O'rtacha aniqlik",
+    topTypists: "Eng yaxshi yozuvchilar",
+    seeHowYouRank: "Boshqalar bilan qanday taqqoslashingizni ko'ring",
+    leaderboardFilters: "Reyting filtrlari",
+    category: "Kategoriya",
+    timePeriod: "Vaqt davri",
+    rankings: "reytinglar",
+    competitors: "raqobatchilar",
+    noRankingsYet: "Hali reytinglar yo'q",
+    completeTestsToAppear: "Reytingda ko'rinish uchun testlarni tugallang!",
+    you: "Siz",
+    avg: "O'rtacha",
+    loginRequired: "Kirish talab qilinadi",
+    signInToSeeRanking: "Shaxsiy reytingingizni ko'rish va boshqalar bilan raqobatlashish uchun kiring!",
+    noRankingYet: "Hali reyting yo'q",
+    completeTestsToGetRanked: "Reytingga kirish uchun joriy filtrlar bilan testlarni tugallang!",
+    yourCurrentRanking: "Sizning joriy reytingingiz",
+    in: "da",
+    averageAccuracy: "O'rtacha aniqlik",
+    testsDone: "Tugallangan testlar",
+    waysToImproveYourRanking: "Reytingingizni yaxshilash yo'llari",
+    practiceRegularlyToImproveConsistency:
+      "Barqarorlikni yaxshilash va reytingda ko'tarilish uchun muntazam mashq qiling",
+    completeMoreTestsToEstablishBetterAverage:
+      "Yaxshiroq o'rtacha ko'rsatkich va reyting o'rnatish uchun ko'proq testlarni tugallang",
+    workOnConsistency: "Barqarorlik ustida ishlang - testlar bo'ylab barqaror natijalarni saqlashga harakat qiling",
+    tryDifferentLanguagesAndTestTypes:
+      "Kuchli tomonlaringizni topish uchun turli tillar va test turlarini sinab ko'ring",
+    challengeYourselfWithLongerTests: "Chidamlilikni oshirish uchun uzunroq testlar bilan o'zingizni sinang",
+    tests: "testlar",
+    yourRanking: "Sizning reytingingiz",
+
+    // Languages
+    "language.uzbek": "O'zbek",
+    "language.english": "Ingliz",
+    "language.russian": "Rus",
+    "language.spanish": "Ispan",
+    "language.french": "Fransuz",
+    "language.german": "Nemis",
+  },
+  en: {
+    // Navigation
+    test: "Test",
+    leaderboard: "Leaderboard",
+    settings: "Settings",
+    profile: "Profile",
+    login: "Login",
+    signup: "Sign Up",
+    signOut: "Sign Out",
+    viewProfile: "View Profile",
+
+    // Test Interface
+    startTyping: "Start typing...",
+    timeLeft: "Time left",
+    wpm: "WPM",
+    accuracy: "Accuracy",
+    errors: "Errors",
+    words: "Words",
+    restart: "Restart",
+    testComplete: "Test Complete!",
+    reset: "Reset",
+    time: "Time",
+    progress: "Progress",
+    seconds: "seconds",
+    clickToStart: "Click on the text area to start",
+    startTypingInstruction: "Test will start automatically when you type the first character",
+    typingInstruction: "Type the text above as accurately and quickly as possible",
+
+    // Settings
+    testType: "Test Type",
+    timeMode: "Time Mode",
+    wordMode: "Word Mode",
+    language: "Text Language",
+    theme: "Theme",
+    interfaceLanguage: "Interface Language",
+    darkMode: "Dark",
+    lightMode: "Light",
+    systemMode: "System",
+
+    // Results
+    wordsPerMinute: "Words Per Minute",
+    totalWords: "Total Words",
+    totalErrors: "Total Errors",
+    finalAccuracy: "Final Accuracy",
+    testDuration: "Test Duration",
+    consistency: "Consistency",
+    hereAreResults: "Here are your results",
+    globalRanking: "Your Global Ranking",
+    outOfAllPlayers: "out of all players",
+    best: "best",
+    testsCompleted: "tests completed",
+    viewLeaderboard: "View Leaderboard",
+    detailedStatistics: "Detailed Statistics",
+    correctCharacters: "Correct Characters",
+    totalCharacters: "Total Characters",
+    completedAt: "Completed at",
+    tryAgain: "Try Again",
+    shareResults: "Share Results",
+    tipsToImprove: "Tips to Improve",
+    focusOnAccuracy: "Focus on accuracy first - speed will come naturally with practice",
+    practiceTouchTyping: "Practice touch typing to improve your speed",
+    takeYourTime: "Take your time and double-check difficult words",
+    regularPractice: "Regular practice is key to improving your typing skills",
+    tryDifferentLanguages: "Try different languages and text types to challenge yourself",
+    checkLeaderboard: "Check the leaderboard to see how you compare with others",
+
+    // Ratings
+    excellent: "Excellent",
+    good: "Good",
+    average: "Average",
+    needsPractice: "Needs Practice",
+    perfect: "Perfect",
+    needsWork: "Needs Work",
+
+    // Auth
+    username: "Username",
+    email: "Email",
+    password: "Password",
+    confirmPassword: "Confirm Password",
+    createAccount: "Create Account",
+    signInToAccount: "Sign In to Account",
+    alreadyHaveAccount: "Already have an account?",
+    dontHaveAccount: "Don't have an account?",
+
+    // Leaderboard
+    globalLeaderboard: "Global Leaderboard",
+    rank: "Rank",
+    user: "User",
+    bestWpm: "Best WPM",
+    avgAccuracy: "Avg Accuracy",
+    topTypists: "Top Typists",
+    seeHowYouRank: "See how you rank against other users",
+    leaderboardFilters: "Leaderboard Filters",
+    category: "Category",
+    timePeriod: "Time Period",
+    rankings: "Rankings",
+    competitors: "competitors",
+    noRankingsYet: "No Rankings Yet",
+    completeTestsToAppear: "Complete some typing tests to appear on the leaderboard!",
+    you: "You",
+    avg: "Avg",
+    loginRequired: "Login Required",
+    signInToSeeRanking: "Sign in to see your personal ranking and compete with others!",
+    noRankingYet: "No Ranking Yet",
+    completeTestsToGetRanked: "Complete some typing tests with the current filters to get ranked!",
+    yourCurrentRanking: "Your Current Ranking",
+    in: "in",
+    averageAccuracy: "Average Accuracy",
+    testsDone: "Tests Done",
+    waysToImproveYourRanking: "Ways to Improve Your Ranking",
+    practiceRegularlyToImproveConsistency: "Practice regularly to improve your consistency and climb the rankings",
+    completeMoreTestsToEstablishBetterAverage: "Complete more tests to establish a better average and ranking",
+    workOnConsistency: "Work on consistency - try to maintain steady performance across tests",
+    tryDifferentLanguagesAndTestTypes: "Try different languages and test types to find your strengths",
+    challengeYourselfWithLongerTests: "Challenge yourself with longer tests to build endurance",
+    tests: "tests",
+    yourRanking: "Your Ranking",
+
+    // Languages
+    "language.uzbek": "Uzbek",
+    "language.english": "English",
+    "language.russian": "Russian",
+    "language.spanish": "Spanish",
+    "language.french": "French",
+    "language.german": "German",
+  },
+  ru: {
+    // Navigation
+    test: "Тест",
+    leaderboard: "Рейтинг",
+    settings: "Настройки",
+    profile: "Профиль",
+    login: "Войти",
+    signup: "Регистрация",
+    signOut: "Выйти",
+    viewProfile: "Посмотреть профиль",
+
+    // Test Interface
+    startTyping: "Начните печатать...",
+    timeLeft: "Осталось времени",
+    wpm: "Слов/мин",
+    accuracy: "Точность",
+    errors: "Ошибки",
+    words: "Слова",
+    restart: "Перезапустить",
+    testComplete: "Тест завершен!",
+    reset: "Сброс",
+    time: "Время",
+    progress: "Прогресс",
+    seconds: "секунд",
+    clickToStart: "Нажмите на текстовое поле для начала",
+    startTypingInstruction: "Тест начнется автоматически при вводе первого символа",
+    typingInstruction: "Печатайте текст выше как можно точнее и быстрее",
+
+    // Settings
+    testType: "Тип теста",
+    timeMode: "Режим времени",
+    wordMode: "Режим слов",
+    language: "Язык текста",
+    theme: "Тема",
+    interfaceLanguage: "Язык интерфейса",
+    darkMode: "Темная",
+    lightMode: "Светлая",
+    systemMode: "Системная",
+
+    // Results
+    wordsPerMinute: "Слов в минуту",
+    totalWords: "Всего слов",
+    totalErrors: "Всего ошибок",
+    finalAccuracy: "Итоговая точность",
+    testDuration: "Длительность теста",
+    consistency: "Стабильность",
+    hereAreResults: "Вот ваши результаты",
+    globalRanking: "Ваш глобальный рейтинг",
+    outOfAllPlayers: "из всех игроков",
+    best: "лучший",
+    testsCompleted: "тестов завершено",
+    viewLeaderboard: "Посмотреть рейтинг",
+    detailedStatistics: "Подробная статистика",
+    correctCharacters: "Правильные символы",
+    totalCharacters: "Всего символов",
+    completedAt: "Завершено в",
+    tryAgain: "Попробовать снова",
+    shareResults: "Поделиться результатами",
+    tipsToImprove: "Советы по улучшению",
+    focusOnAccuracy: "Сначала сосредоточьтесь на точности - скорость придет с практикой",
+    practiceTouchTyping: "Практикуйте слепую печать для улучшения скорости",
+    takeYourTime: "Не торопитесь и дважды проверяйте сложные слова",
+    regularPractice: "Регулярная практика - ключ к улучшению навыков печати",
+    tryDifferentLanguages: "Попробуйте разные языки и типы текстов для вызова",
+    checkLeaderboard: "Проверьте рейтинг, чтобы сравнить себя с другими",
+
+    // Ratings
+    excellent: "Отлично",
+    good: "Хорошо",
+    average: "Средне",
+    needsPractice: "Нужна практика",
+    perfect: "Идеально",
+    needsWork: "Нужно поработать",
+
+    // Auth
+    username: "Имя пользователя",
+    email: "Email",
+    password: "Пароль",
+    confirmPassword: "Подтвердите пароль",
+    createAccount: "Создать аккаунт",
+    signInToAccount: "Войти в аккаунт",
+    alreadyHaveAccount: "Уже есть аккаунт?",
+    dontHaveAccount: "Нет аккаунта?",
+
+    // Leaderboard
+    globalLeaderboard: "Глобальный рейтинг",
+    rank: "Место",
+    user: "Пользователь",
+    bestWpm: "Лучший WPM",
+    avgAccuracy: "Средняя точность",
+    topTypists: "Лучшие печатники",
+    seeHowYouRank: "Посмотрите, как вы сравниваетесь с другими пользователями",
+    leaderboardFilters: "Фильтры рейтинга",
+    category: "Категория",
+    timePeriod: "Период времени",
+    rankings: "Рейтинги",
+    competitors: "участников",
+    noRankingsYet: "Рейтингов пока нет",
+    completeTestsToAppear: "Пройдите несколько тестов печати, чтобы появиться в рейтинге!",
+    you: "Вы",
+    avg: "Сред",
+    loginRequired: "Требуется вход",
+    signInToSeeRanking: "Войдите, чтобы увидеть свой личный рейтинг и соревноваться с другими!",
+    noRankingYet: "Рейтинга пока нет",
+    completeTestsToGetRanked: "Пройдите несколько тестов с текущими фильтрами, чтобы получить рейтинг!",
+    yourCurrentRanking: "Ваш текущий рейтинг",
+    in: "в",
+    averageAccuracy: "Средняя точность",
+    testsDone: "Тестов пройдено",
+    waysToImproveYourRanking: "Способы улучшить ваш рейтинг",
+    practiceRegularlyToImproveConsistency: "Регулярно практикуйтесь для улучшения стабильности и подъема в рейтинге",
+    completeMoreTestsToEstablishBetterAverage:
+      "Пройдите больше тестов для установления лучшего среднего показателя и рейтинга",
+    workOnConsistency: "Работайте над стабильностью - старайтесь поддерживать стабильную производительность в тестах",
+    tryDifferentLanguagesAndTestTypes: "Попробуйте разные языки и типы тестов, чтобы найти свои сильные стороны",
+    challengeYourselfWithLongerTests: "Бросьте себе вызов более длинными тестами для развития выносливости",
+    tests: "тестов",
+    yourRanking: "Ваш рейтинг",
+
+    // Languages
+    "language.uzbek": "Узбекский",
+    "language.english": "Английский",
+    "language.russian": "Русский",
+    "language.spanish": "Испанский",
+    "language.french": "Французский",
+    "language.german": "Немецкий",
+  },
+}
+
+interface I18nContextType {
+  language: Language
+  setLanguage: (lang: Language) => void
+  t: (key: keyof Translations) => string
+}
+
+const I18nContext = createContext<I18nContextType | undefined>(undefined)
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguage] = useState<Language>("uz")
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("interface-language") as Language
+    if (savedLanguage && translations[savedLanguage]) {
+      setLanguage(savedLanguage)
+    }
+  }, [])
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang)
+    localStorage.setItem("interface-language", lang)
+  }
+
+  const t = (key: keyof Translations): string => {
+    return translations[language][key] || key
+  }
+
+  return (
+    <I18nContext.Provider
+      value={{
+        language,
+        setLanguage: handleSetLanguage,
+        t,
+      }}
+    >
+      {children}
+    </I18nContext.Provider>
+  )
+}
+
+export function useI18n() {
+  const context = useContext(I18nContext)
+  if (context === undefined) {
+    throw new Error("useI18n must be used within an I18nProvider")
+  }
+  return context
+}
