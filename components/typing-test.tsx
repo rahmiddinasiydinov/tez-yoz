@@ -323,7 +323,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
                 {testType === "time" ? `${testValue} ${t("seconds")}` : `${testValue} ${t("words")}`}
               </Badge>
               <Badge variant="outline" className="capitalize text-xs sm:text-sm">
-                {t(`language.${language}`)}
+                {t('language')}
               </Badge>
               {isActive && testType === "time" && (
                 <Badge variant="outline" className="text-sm sm:text-lg font-mono">

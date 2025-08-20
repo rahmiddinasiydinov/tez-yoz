@@ -31,7 +31,7 @@ export function SettingsPanel() {
         <CardHeader className="pb-4">
           <CardTitle className="font-heading flex items-center gap-2 text-lg">
             <Clock className="h-5 w-5 text-primary" />
-            {t.testType}
+            {t('testType')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -45,7 +45,7 @@ export function SettingsPanel() {
                 size="sm"
               >
                 <Clock className="h-4 w-4" />
-                {t.timeMode}
+                {t('timeMode')}
               </Button>
               <Button
                 variant={settings.testType === "words" ? "default" : "outline"}
@@ -54,7 +54,7 @@ export function SettingsPanel() {
                 size="sm"
               >
                 <Hash className="h-4 w-4" />
-                {t.wordMode}
+                {t('wordMode')}
               </Button>
             </div>
           </div>
@@ -62,7 +62,7 @@ export function SettingsPanel() {
           {/* Time Options */}
           {settings.testType === "time" && (
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t.timeMode}</Label>
+              <Label className="text-sm font-medium">{t('timeMode')}</Label>
               <div className="flex flex-wrap gap-2">
                 {settings.timeOptions.map((time) => (
                   <Badge
@@ -84,7 +84,7 @@ export function SettingsPanel() {
           {/* Word Options */}
           {settings.testType === "words" && (
             <div className="space-y-2">
-              <Label className="text-sm font-medium">{t.words}</Label>
+              <Label className="text-sm font-medium">{t('words')}</Label>
               <div className="flex flex-wrap gap-2">
                 {settings.wordOptions.map((words) => (
                   <Badge
@@ -110,7 +110,7 @@ export function SettingsPanel() {
         <CardHeader className="pb-4">
           <CardTitle className="font-heading flex items-center gap-2 text-lg">
             <Globe className="h-5 w-5 text-primary" />
-            {t.language}
+            {t('language')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -142,7 +142,7 @@ export function SettingsPanel() {
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-sm font-medium">Live {t.wpm}</Label>
+              <Label className="text-sm font-medium">Live {t('wpm')}</Label>
               <p className="text-xs text-muted-foreground">Show real-time typing speed</p>
             </div>
             <Switch
@@ -181,7 +181,7 @@ export function SettingsPanel() {
               className="flex items-center gap-2 bg-transparent"
             >
               <RotateCcw className="h-4 w-4" />
-              {t.restart}
+              {t('restart')}
             </Button>
           </div>
         </CardContent>
