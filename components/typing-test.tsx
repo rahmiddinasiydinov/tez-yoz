@@ -47,14 +47,22 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const userInputRef = useRef(userInput)
   const textRef = useRef(text)
   const errorsRef = useRef(errors)
-  const lastCheckedIndex = useRef(0);
+  const lastCheckedIndex = useRef(0)
+  const testCompleteRef = useRef(false)
+  
   userInputRef.current = userInput
   textRef.current = text
   errorsRef.current = errors
+  testCompleteRef.current = testComplete
 
+  // Cleanup interval on unmount
   useEffect(() => {
-    console.log(userInput)
-  }, [userInput]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const newText = getRandomText(language, testType === "words" ? testValue : undefined)
@@ -71,15 +79,22 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     setTestComplete(false)
     setTestResult(null)
     setUserInput('')
-    setText(getRandomText(language, testType === "words" ? testValue : undefined))
+    
+    const newText = getRandomText(language, testType === "words" ? testValue : undefined)
+    setText(newText)
+    textCharsRef.current = newText.split("")
+    
     userInputRef.current = ''
-    textRef.current = text
+    textRef.current = newText
     errorsRef.current = 0
     lastCheckedIndex.current = 0
+    testCompleteRef.current = false
+    
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
+      intervalRef.current = null
     }
-  }, [testType, testValue, language, text])
+  }, [testType, testValue, language])
 
   const startTest = useCallback(() => {
     if (isActive) return
@@ -91,7 +106,13 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            completeTest()
+            // Clear interval before completing test to prevent race conditions
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current)
+              intervalRef.current = null
+            }
+            // Use setTimeout to ensure state updates are processed
+            setTimeout(() => completeTest(), 0)
             return 0
           }
           return prev - 1
@@ -101,17 +122,20 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   }, [isActive, testType])
 
   const completeTest = useCallback(() => {
+    // Prevent multiple completions
+    if (testCompleteRef.current) return
+
     const userInput = userInputRef.current
     const text = textRef.current
     const errors = errorsRef.current
 
-    if (testComplete) return
-
     setIsActive(false)
     setTestComplete(true)
+    testCompleteRef.current = true
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
+      intervalRef.current = null
     }
 
     let timeElapsed: number
@@ -125,6 +149,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     let correctChars = 0
     let totalChars = userInput.length
 
+    // Add bounds checking for safety
     for (let i = 0; i < inputChars.length && i < text.length; i++) {
       if (inputChars[i] === text[i]) {
         correctChars++
@@ -140,20 +165,6 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
     const wpm = calculateWPM(correctChars, timeElapsed)
     const accuracy = calculateAccuracy(correctChars, totalChars)
-
-    console.log("Test Results Debug:", {
-      userInput: userInput,
-      userInputLength: userInput.length,
-      textLength: text.length,
-      correctChars,
-      totalChars,
-      timeElapsed,
-      testType,
-      testValue,
-      wpm,
-      accuracy,
-      errors,
-    })
 
     const result: TestResult = {
       wpm,
@@ -171,6 +182,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     setTestResult(result)
     saveTestResult(result, user?.id)
 
+    // Update user statistics using consistent storage method
     if (user) {
       const currentUser = safeStorage.getJSON<any>("typeSpeed_user", {})
       const updatedStats = {
@@ -189,14 +201,15 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
       const updatedUser = { ...currentUser, stats: updatedStats }
       safeStorage.setJSON("typeSpeed_user", updatedUser)
 
-      const users = JSON.parse(localStorage.getItem("typeSpeed_users") || "[]")
+      // Use consistent storage method for users list
+      const users = safeStorage.getJSON<any[]>("typeSpeed_users", [])
       const userIndex = users.findIndex((u: any) => u.id === user.id)
       if (userIndex !== -1) {
         users[userIndex] = { ...users[userIndex], stats: updatedStats }
-        localStorage.setItem("typeSpeed_users", JSON.stringify(users))
+        safeStorage.setJSON("typeSpeed_users", users)
       }
     }
-  }, [userInput, text, startTime, errors, testType, testValue, language, user, testComplete])
+  }, [startTime, testType, testValue, language, user])
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,9 +230,10 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
       const currentLength = value.length
       const lastLength = lastCheckedIndex.current
 
+      // Improved error calculation with bounds checking
       if (currentLength > lastLength) {
         let newErrors = 0
-        for (let i = lastLength; i < currentLength; i++) {
+        for (let i = lastLength; i < currentLength && i < textCharsRef.current.length; i++) {
           if (value[i] !== textCharsRef.current[i]) {
             newErrors++
           }
@@ -228,8 +242,9 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
           setErrors((prev) => prev + newErrors)
         }
       } else if (currentLength < lastLength) {
+        // Recalculate total errors when backspacing
         let totalErrors = 0
-        for (let i = 0; i < currentLength; i++) {
+        for (let i = 0; i < currentLength && i < textCharsRef.current.length; i++) {
           if (value[i] !== textCharsRef.current[i]) {
             totalErrors++
           }
