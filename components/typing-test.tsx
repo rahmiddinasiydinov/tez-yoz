@@ -21,6 +21,7 @@ import { useI18n } from "@/lib/i18n-context"
 import { TestResults } from "./test-results"
 import Link from "next/link"
 import safeStorage from "@/lib/safe-storage"
+import TimeProgress from "./progress/time-progress"
 
 interface TypingTestProps {
   testType?: "time" | "words"
@@ -49,11 +50,13 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const errorsRef = useRef(errors)
   const lastCheckedIndex = useRef(0)
   const testCompleteRef = useRef(false)
-  
+  const testValueRef = useRef(15);
+
   userInputRef.current = userInput
   textRef.current = text
   errorsRef.current = errors
   testCompleteRef.current = testComplete
+  testValueRef.current = testValue
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -79,17 +82,17 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     setTestComplete(false)
     setTestResult(null)
     setUserInput('')
-    
+
     const newText = getRandomText(language, testType === "words" ? testValue : undefined)
     setText(newText)
     textCharsRef.current = newText.split("")
-    
+
     userInputRef.current = ''
     textRef.current = newText
     errorsRef.current = 0
     lastCheckedIndex.current = 0
     testCompleteRef.current = false
-    
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
       intervalRef.current = null
@@ -140,7 +143,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
     let timeElapsed: number
     if (testType === "time") {
-      timeElapsed = testValue
+      timeElapsed = testValueRef.current
     } else {
       timeElapsed = startTime ? Math.max((Date.now() - startTime) / 1000, 1) : 1
     }
@@ -190,11 +193,11 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
         bestWpm: Math.max(currentUser.stats.bestWpm, wpm),
         averageWpm: Math.round(
           (currentUser.stats.averageWpm * currentUser.stats.testsCompleted + wpm) /
-            (currentUser.stats.testsCompleted + 1),
+          (currentUser.stats.testsCompleted + 1),
         ),
         averageAccuracy: Math.round(
           (currentUser.stats.averageAccuracy * currentUser.stats.testsCompleted + accuracy) /
-            (currentUser.stats.testsCompleted + 1),
+          (currentUser.stats.testsCompleted + 1),
         ),
       }
 
@@ -292,43 +295,12 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
-      {!isActive && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground">{t("wpm")}</p>
-              <p className="text-lg sm:text-2xl font-bold">---</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground">{t("accuracy")}</p>
-              <p className="text-lg sm:text-2xl font-bold">---%</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground">{t("errors")}</p>
-              <p className="text-lg sm:text-2xl font-bold text-red-500">---</p>
-            </div>
-          </Card>
-          <Card className="p-2 sm:p-4">
-            <div className="text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                {testType === "time" ? t("time") : t("progress")}
-              </p>
-              <p className="text-lg sm:text-2xl font-bold">
-                {testType === "time" ? `${testValue}s` : `0/${testValue}`}
-              </p>
-            </div>
-          </Card>
-        </div>
-      )}
-
+    <div className="max-full mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
       {testType === "words" && isActive && (
         <Progress value={(Math.min(userInput.trim().split(" ").length, testValue) / testValue) * 100} className="h-2" />
       )}
+
+      {testType === "time" && isActive && <TimeProgress testValue={testValue} isActive={isActive} onComplete={() => {}}/>}
 
       <Card className="p-4 sm:p-6 lg:p-8">
         <div className="space-y-4 sm:space-y-6">

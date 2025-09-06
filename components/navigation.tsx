@@ -21,7 +21,6 @@ export function Navigation() {
   const { user, logout } = useAuth()
   const { t, language, setLanguage } = useI18n()
   const { theme, setTheme } = useTheme()
-  console.log(t)
 
   const navItems = [
     { href: "/", label: t('test'), icon: Keyboard },
