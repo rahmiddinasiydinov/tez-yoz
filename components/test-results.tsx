@@ -48,7 +48,7 @@ export function TestResults({ result, onRestart }: TestResultsProps) {
   const accuracyRating = getAccuracyRating(result.accuracy)
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
+    <div className="max-full mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
       {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="font-heading text-2xl sm:text-3xl font-bold">{t("testComplete")}</h2>
@@ -172,7 +172,7 @@ export function TestResults({ result, onRestart }: TestResultsProps) {
                   : `${result.testValue} ${t("words")}`}
               </Badge>
               <Badge variant="outline" className="capitalize text-xs sm:text-sm">
-                {t(`language.${result.language}`)}
+                {t(("language." + result.language) as keyof typeof t)}
               </Badge>
             </div>
             <span className="text-xs sm:text-sm text-muted-foreground">
@@ -188,10 +188,12 @@ export function TestResults({ result, onRestart }: TestResultsProps) {
           <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
           {t("tryAgain")}
         </Button>
-        <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent">
+        {/* There is not share logic for now */}
+        
+        {/* <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent">
           <Share2 className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
           {t("shareResults")}
-        </Button>
+        </Button> */}
       </div>
 
       {/* Tips */}

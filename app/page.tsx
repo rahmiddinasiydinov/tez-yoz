@@ -17,8 +17,8 @@ export default function HomePage() {
           <p className="text-muted-foreground text-lg">Test your typing speed and climb the leaderboard!</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3">
+        <div>
+          <div>
             <TypingTest
               testType={settings.testType}
               testValue={settings.testType === "time" ? settings.selectedTime : settings.selectedWords}
@@ -26,29 +26,6 @@ export default function HomePage() {
             />
           </div>
 
-          <div className="space-y-6">
-            <LeaderboardWidget
-              title="Top WPM"
-              filters={{
-                category: "wpm",
-                period: "all-time",
-                testType: "all",
-                language: "all",
-              }}
-              limit={5}
-            />
-
-            <LeaderboardWidget
-              title="Most Accurate"
-              filters={{
-                category: "accuracy",
-                period: "all-time",
-                testType: "all",
-                language: "all",
-              }}
-              limit={5}
-            />
-          </div>
         </div>
       </main>
     </div>
