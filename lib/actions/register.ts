@@ -33,4 +33,4 @@ export async function register(username:string, email: string, password: string)
   }
 
   return data;
-}
+} 
