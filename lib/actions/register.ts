@@ -13,7 +13,7 @@ export async function register(username:string, email: string, password: string)
     throw new Error('Username, email and password are required');
   }
   const base = API!.replace(/\/$/, '');
-  const res = await fetch(`${base}/auth/register`, {
+  const res = await fetch(`${base}/api/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ export async function verify(email: string, code: string) {
   }
 
   const base = API!.replace(/\/$/, '');
-  const res = await fetch(`${base}/auth/verify`, {
+  const res = await fetch(`${base}/api/auth/verify`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
