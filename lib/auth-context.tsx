@@ -3,6 +3,8 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import safeStorage from "./safe-storage"
+import { register } from "@/lib/actions/register"
+import { verify as verifyAction } from "@/lib/actions/verify"
 
 export interface User {
   id: string
@@ -21,6 +23,7 @@ interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   signup: (username: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  verify: (email: string, code: string) => Promise<{ success: boolean; error?: string; token?: string }>
   logout: () => void
   isLoading: boolean
 }
@@ -29,7 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     // Check for existing session on mount
@@ -76,58 +79,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string,
   ): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
-
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Get stored users
-    const storedUsers = safeStorage.getJSON<any[]>("typeSpeed_users", [])
-
-    // Check if user already exists
-    if (storedUsers.some((u: any) => u.email === email)) {
+    try {
+      await register(username, email, password)
+      return { success: true }
+    } catch (e: any) {
+      const message = e?.message || "Signup failed"
+      return { success: false, error: message }
+    } finally {
       setIsLoading(false)
-      return { success: false, error: "User with this email already exists" }
     }
+  }
 
-    if (storedUsers.some((u: any) => u.username === username)) {
+  const verify = async (email: string, code: string): Promise<{ success: boolean; error?: string; token?: string }> => {
+    setIsLoading(true)
+    try {
+      const res: any = await verifyAction(email, code)
+      // Try common token locations
+      const token: string | undefined =
+        res?.data?.token || res?.token || res?.data?.accessToken || res?.accessToken
+
+      if (token) {
+        safeStorage.setItem("typeSpeed_token", token)
+      }
+      return { success: true, token }
+    } catch (e: any) {
+      const message = e?.message || "Verification failed"
+      return { success: false, error: message }
+    } finally {
       setIsLoading(false)
-      return { success: false, error: "Username already taken" }
     }
-
-    // Create new user
-    const newUser = {
-      id: Date.now().toString(),
-      username,
-      email,
-      password, // In real app, this would be hashed
-      createdAt: new Date().toISOString(),
-      stats: {
-        testsCompleted: 0,
-        bestWpm: 0,
-        averageWpm: 0,
-        averageAccuracy: 0,
-      },
-    }
-
-    // Save to storage
-    storedUsers.push(newUser)
-    safeStorage.setJSON("typeSpeed_users", storedUsers)
-
-    // Set current user (without password)
-    const { password: _, ...userWithoutPassword } = newUser
-    setUser(userWithoutPassword)
-    safeStorage.setJSON("typeSpeed_user", userWithoutPassword)
-    setIsLoading(false)
-
-    return { success: true }
   }
 
   const logout = () => {
     setUser(null)
     safeStorage.removeItem("typeSpeed_user")
+    safeStorage.removeItem("typeSpeed_token")
   }
 
-  return <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {
