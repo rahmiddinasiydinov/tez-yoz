@@ -2,7 +2,7 @@
 
 import {RegisterResponse} from "@/lib/types/auth";
 
-const API = process.env.NODE_PUBLIC_API
+const API = process.env.NEXT_PUBLIC_API
 
 if(!API){
 throw new Error('API is not found in env')
