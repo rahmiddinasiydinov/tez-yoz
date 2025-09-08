@@ -14,50 +14,66 @@ import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 
 export function SignupForm() {
+  const [step, setStep] = useState<"signup" | "verify">("signup")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [code, setCode] = useState("")
   const [error, setError] = useState("")
-  const { signup, isLoading } = useAuth()
+  const { signup, verify, isLoading } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
-    if (!username || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields")
-      return
-    }
+    if (step === "signup") {
+      if (!username || !email || !password || !confirmPassword) {
+        setError("Please fill in all fields")
+        return
+      }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match")
-      return
-    }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match")
+        return
+      }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long")
-      return
-    }
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters long")
+        return
+      }
 
-    if (username.length < 3) {
-      setError("Username must be at least 3 characters long")
-      return
-    }
+      if (username.length < 3) {
+        setError("Username must be at least 3 characters long")
+        return
+      }
 
-    const result = await signup(username, email, password)
-    if (result.success) {
-      router.push("/")
+      const result = await signup(username, email, password)
+      if (result.success) {
+        setStep("verify")
+      } else {
+        setError(result.error || "Signup failed")
+      }
     } else {
-      setError(result.error || "Signup failed")
+      if (!email || !code) {
+        setError("Please enter the verification code")
+        return
+      }
+      const result = await verify(email, code)
+      if (result.success) {
+        router.push("/")
+      } else {
+        setError(result.error || "Verification failed")
+      }
     }
   }
+console.log(error);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create Account</CardTitle>
+        <CardTitle>{step === "signup" ? "Create Account" : "Verify Your Email"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,57 +82,82 @@ export function SignupForm() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              placeholder="Choose a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
+
+          {step === "signup" ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  placeholder="Choose a username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground">
+                We sent a verification code to <span className="font-medium">{email}</span>. Enter it below to verify
+                your account.
+              </p>
+              <div className="space-y-2">
+                <Label htmlFor="code">Verification Code</Label>
+                <Input
+                  id="code"
+                  placeholder="Enter the code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            </>
+          )}
+
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating Account...
+                {step === "signup" ? "Creating Account..." : "Verifying..."}
               </>
-            ) : (
+            ) : step === "signup" ? (
               "Create Account"
+            ) : (
+              "Verify"
             )}
           </Button>
         </form>

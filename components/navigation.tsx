@@ -8,6 +8,8 @@ import { Keyboard, Trophy, Settings, User, LogOut, Sun, Moon, Monitor, Globe } f
 import { useAuth } from "@/lib/auth-context"
 import { useI18n } from "@/lib/i18n-context"
 import { useTheme } from "@/components/theme-provider"
+import { useEffect, useState } from "react"
+import safeStorage from "@/lib/safe-storage"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +23,26 @@ export function Navigation() {
   const { user, logout } = useAuth()
   const { t, language, setLanguage } = useI18n()
   const { theme, setTheme } = useTheme()
+  const [hasToken, setHasToken] = useState(false)
+
+  useEffect(() => {
+    setHasToken(!!safeStorage.getItem("typeSpeed_token"))
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "typeSpeed_token") {
+        setHasToken(!!e.newValue)
+      }
+    }
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", onStorage)
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", onStorage)
+      }
+    }
+  }, [])
+
+  const isAuthenticated = !!user || hasToken
 
   const navItems = [
     { href: "/", label: t('test'), icon: Keyboard },
@@ -102,7 +124,7 @@ export function Navigation() {
                     {lang.name}
                   </DropdownMenuItem>
                 ))}
-                {user && (
+                {(user || hasToken) && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logout} className="text-destructive">
@@ -180,28 +202,49 @@ export function Navigation() {
             </DropdownMenu>
 
             {/* User Menu */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 px-2">
-                    <User className="h-4 w-4 mr-2" />
-                    <span className="text-sm">{user.username}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">{t('viewProfile')}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings">{t('settings')}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-destructive">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    {t('signOut')}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            {(user || hasToken) ? (
+              user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 px-2">
+                      <User className="h-4 w-4 mr-2" />
+                      <span className="text-sm">{user.username}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">{t('viewProfile')}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">{t('settings')}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout} className="text-destructive">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('signOut')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 px-2">
+                      <User className="h-4 w-4 mr-2" />
+                      <span className="text-sm">{t('profile')}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">{t('viewProfile')}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout} className="text-destructive">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('signOut')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
             ) : (
               <div className="flex items-center space-x-2">
                 <Button variant="ghost" size="sm" asChild className="h-8">
@@ -214,7 +257,7 @@ export function Navigation() {
             )}
           </div>
 
-          {!user && (
+          {!(user || hasToken) && (
             <div className="md:hidden flex items-center space-x-1">
               <Button variant="ghost" size="sm" asChild className="h-8 text-xs px-2">
                 <Link href="/login">{t('login')}</Link>
