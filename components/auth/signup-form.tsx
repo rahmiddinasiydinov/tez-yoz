@@ -68,7 +68,6 @@ export function SignupForm() {
       }
     }
   }
-console.log(error);
 
   return (
     <Card>
