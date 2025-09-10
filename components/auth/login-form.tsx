@@ -30,6 +30,7 @@ export function LoginForm() {
     }
 
     const result = await login(email, password)
+    
     if (result.success) {
       router.push("/")
     } else {

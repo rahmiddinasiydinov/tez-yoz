@@ -3,8 +3,9 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import safeStorage from "./safe-storage"
-import { register } from "@/lib/actions/register"
-import { verify as verifyAction } from "@/lib/actions/verify"
+import { registerAction } from "@/lib/actions/register"
+import { verifyAction as verifyAction } from "@/lib/actions/verify"
+import { loginAction } from "./actions/login"
 
 export interface User {
   id: string
@@ -48,29 +49,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const res = await loginAction(email, password)
 
-    // Get stored users
-    const storedUsers = safeStorage.getJSON<any[]>("typeSpeed_users", [])
-    const existingUser = storedUsers.find((u: any) => u.email === email)
-
-    if (!existingUser) {
+      return { success: true }
+    } catch (error) {
+      let message = "Login failed"
+      if (error instanceof Error) {
+        message = error.message
+      }
+      return { success: false, error: message }
+    } finally {
       setIsLoading(false)
-      return { success: false, error: "User not found" }
     }
-
-    if (existingUser.password !== password) {
-      setIsLoading(false)
-      return { success: false, error: "Invalid password" }
-    }
-
-    const { password: _, ...userWithoutPassword } = existingUser
-    setUser(userWithoutPassword)
-    safeStorage.setJSON("typeSpeed_user", userWithoutPassword)
-    setIsLoading(false)
-
-    return { success: true }
   }
 
   const signup = async (
@@ -80,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
-      await register(username, email, password)
+      await registerAction(username, email, password)
       return { success: true }
     } catch (e: any) {
       const message = e?.message || "Signup failed"
@@ -90,18 +81,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const verify = async (email: string, code: string): Promise<{ success: boolean; error?: string; token?: string }> => {
+  const verify = async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
       const res: any = await verifyAction(email, code)
       // Try common token locations
-      const token: string | undefined =
-        res?.data?.token || res?.token || res?.data?.accessToken || res?.accessToken
+      const token: string | undefined = res?.data?.accessToken
 
-      if (token) {
-        safeStorage.setItem("typeSpeed_token", token)
-      }
-      return { success: true, token }
+
+      return { success: true }
     } catch (e: any) {
       const message = e?.message || "Verification failed"
       return { success: false, error: message }
