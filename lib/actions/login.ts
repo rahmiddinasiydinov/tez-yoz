@@ -43,6 +43,13 @@ export async function loginAction(email: string, password: string) {
       maxAge: 60 * 60 * 24, // 1 day
       path: "/",
     });
+    cookieStore.set("refresh_token", data.data?.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24, // 1 day
+      path: "/",
+    });
     return { success: true };
   } else {
     return { success: false, status: 401, message: "Unauthorized!" };
