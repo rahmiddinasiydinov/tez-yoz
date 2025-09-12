@@ -50,7 +50,7 @@ export async function loginAction(email: string, password: string) {
       maxAge: 60 * 60 * 24, // 1 day
       path: "/",
     });
-    return { success: true };
+    return { success: true, token: data.data.accessToken };
   } else {
     return { success: false, status: 401, message: "Unauthorized!" };
   }

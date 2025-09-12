@@ -1,12 +1,14 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useState } from "react"
 import safeStorage from "./safe-storage"
 import { registerAction } from "@/lib/actions/register"
 import { verifyAction as verifyAction } from "@/lib/actions/verify"
 import { loginAction } from "./actions/login"
-
+import useSWR from 'swr'
+import { object } from "zod"
+import { UserProfileResponse } from "./profile"
 export interface User {
   id: string
   username: string
@@ -21,38 +23,45 @@ export interface User {
 }
 
 interface AuthContextType {
-  user: User | null
+  user: NonNullable<UserProfileResponse['data']> | null
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   signup: (username: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   verify: (email: string, code: string) => Promise<{ success: boolean; error?: string; token?: string }>
   logout: () => void
   isLoading: boolean
+  token: string | null
+}
+
+const fetcher = async (url: string, token: string | null) => {
+  const res = await fetch(url, {
+    credentials: 'include'
+  })
+
+  return await res.json()
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  let user: NonNullable<UserProfileResponse['data']> | null = null
   const [isLoading, setIsLoading] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
 
-  useEffect(() => {
-    // Check for existing session on mount
-    const savedUser = safeStorage.getJSON<User | null>("typeSpeed_user", null)
-    if (savedUser) {
-      setUser(savedUser)
-    } else {
-      // nothing
-    }
-    setIsLoading(false)
-  }, [])
+  const { data, isLoading: isFetching, error } = useSWR<UserProfileResponse>('/api/profile', fetcher)
+
+  if (data?.data) {
+    user = data.data
+  }
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
 
     try {
       const res = await loginAction(email, password)
-
-      return { success: true }
+      if (res.token) {
+        setToken(res.token)
+      }
+      return { success: res.success }
     } catch (error) {
       let message = "Login failed"
       if (error instanceof Error) {
@@ -86,7 +95,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const res: any = await verifyAction(email, code)
       // Try common token locations
-      const token: string | undefined = res?.data?.accessToken
+      if (res.token) {
+        setToken(res.token)
+      }
 
 
       return { success: true }
@@ -99,13 +110,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = () => {
-    setUser(null)
+    user = null
     safeStorage.removeItem("typeSpeed_user")
     safeStorage.removeItem("typeSpeed_token")
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading, token }}>
       {children}
     </AuthContext.Provider>
   )
