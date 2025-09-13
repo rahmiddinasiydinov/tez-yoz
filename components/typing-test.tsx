@@ -30,8 +30,9 @@ interface TypingTestProps {
 }
 
 export function TypingTest({ testType = "time", testValue = 30, language = "uzbek" }: TypingTestProps) {
-  const { user } = useAuth()
   const { settings } = useSettings()
+
+  const { user } = useAuth()
   const { t } = useI18n()
   const [text, setText] = useState("")
   const [userInput, setUserInput] = useState("")

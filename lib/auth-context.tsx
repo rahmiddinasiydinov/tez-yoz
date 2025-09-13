@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import safeStorage from "./safe-storage"
 import { registerAction } from "@/lib/actions/register"
 import { verifyAction as verifyAction } from "@/lib/actions/verify"
@@ -10,27 +10,18 @@ import useSWR from 'swr'
 import { UserProfileResponse } from "./profile"
 import { toast } from "sonner"
 import { mutate } from "swr"
-export interface User {
-  id: string
-  username: string
-  email: string
-  createdAt: string
-  stats: {
-    testsCompleted: number
-    bestWpm: number
-    averageWpm: number
-    averageAccuracy: number
-  }
-}
+
+export type User = NonNullable<UserProfileResponse['data']>
 
 interface AuthContextType {
-  user: NonNullable<UserProfileResponse['data']> | null
+  user: User | null
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   signup: (username: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   verify: (email: string, code: string) => Promise<{ success: boolean; error?: string; token?: string }>
   logout: () => void
   isLoading: boolean
   token: string | null
+  isInitialized: boolean
 }
 
 const fetcher = async (url: string) => {
@@ -44,14 +35,30 @@ const fetcher = async (url: string) => {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  let user: NonNullable<UserProfileResponse['data']> | null = null
   const [isLoading, setIsLoading] = useState(false)
+
+  let user: User | null = null
   const [token, setToken] = useState<string | null>(null)
 
-  const { data, isLoading: isFetching, error } = useSWR<UserProfileResponse>('/api/profile', fetcher)
+  const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<UserProfileResponse>('/api/profile', fetcher, {
+    onError: (error) => {
+      console.error('🔥 SWR Error:', error)
+    },
+    onSuccess: (data) => {
+      console.log('🎉 SWR Success:', data)
+
+    }
+  },)
+
+
+  const isInitialized = !isFetching && !isValidating
+
 
   if (data?.data) {
-    user = data.data
+    user = data.data;
+    safeStorage.setJSON('user', data.data);
+    // setIsLoading(false)
+
   }
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
@@ -113,18 +120,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     const response = await fetch('/api/logout');
     const data = await response.json()
+    safeStorage.removeItem('user');
+
 
     if (data.success) {
       toast.success('Logged out!')
       mutate('/api/profile')
     } else {
-      toast.success('Error happened with logging out.')
+      toast.error('Error happened with logging out.')
     }
 
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading, token }}>
+    <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading, token, isInitialized }}>
       {children}
     </AuthContext.Provider>
   )
