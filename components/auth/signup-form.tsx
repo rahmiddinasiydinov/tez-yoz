@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
 
 export function SignupForm() {
   const [step, setStep] = useState<"signup" | "verify">("signup")
@@ -63,8 +64,10 @@ export function SignupForm() {
       const result = await verify(email, code)
       if (result.success) {
         router.push("/")
+        toast.success('Registered!')
       } else {
         setError(result.error || "Verification failed")
+        toast.error('Registration failed!')
       }
     }
   }

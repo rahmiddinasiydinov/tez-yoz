@@ -7,8 +7,9 @@ import { registerAction } from "@/lib/actions/register"
 import { verifyAction as verifyAction } from "@/lib/actions/verify"
 import { loginAction } from "./actions/login"
 import useSWR from 'swr'
-import { object } from "zod"
 import { UserProfileResponse } from "./profile"
+import { toast } from "sonner"
+import { mutate } from "swr"
 export interface User {
   id: string
   username: string
@@ -32,7 +33,7 @@ interface AuthContextType {
   token: string | null
 }
 
-const fetcher = async (url: string, token: string | null) => {
+const fetcher = async (url: string) => {
   const res = await fetch(url, {
     credentials: 'include'
   })
@@ -61,9 +62,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.token) {
         setToken(res.token)
       }
-      return { success: res.success }
+      mutate('/api/profile')
+      return { success: true }
     } catch (error) {
-      let message = "Login failed"
+      let message = "Login failed."
       if (error instanceof Error) {
         message = error.message
       }
@@ -98,8 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.token) {
         setToken(res.token)
       }
-
-
+      mutate('/api/profile')
       return { success: true }
     } catch (e: any) {
       const message = e?.message || "Verification failed"
@@ -109,10 +110,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = () => {
-    user = null
-    safeStorage.removeItem("typeSpeed_user")
-    safeStorage.removeItem("typeSpeed_token")
+  const logout = async () => {
+    const response = await fetch('/api/logout');
+    const data = await response.json()
+
+    if (data.success) {
+      toast.success('Logged out!')
+      mutate('/api/profile')
+    } else {
+      toast.success('Error happened with logging out.')
+    }
+
   }
 
   return (
