@@ -20,7 +20,6 @@ export function LoginForm() {
   const [error, setError] = useState("")
   const { login, isLoading } = useAuth()
   const router = useRouter()
-  console.log(isLoading, 'login');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

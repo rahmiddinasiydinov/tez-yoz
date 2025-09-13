@@ -40,15 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   let user: User | null = null
   const [token, setToken] = useState<string | null>(null)
 
-  const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<UserProfileResponse>('/api/profile', fetcher, {
-    onError: (error) => {
-      console.error('🔥 SWR Error:', error)
-    },
-    onSuccess: (data) => {
-      console.log('🎉 SWR Success:', data)
-
-    }
-  },)
+  const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<UserProfileResponse>('/api/profile', fetcher)
 
 
   const isInitialized = !isFetching && !isValidating
@@ -68,9 +60,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await loginAction(email, password)
       if (res.token) {
         setToken(res.token)
+        mutate('/api/profile')
+        return { success: true }
       }
-      mutate('/api/profile')
-      return { success: true }
+      return { success: false }
     } catch (error) {
       let message = "Login failed."
       if (error instanceof Error) {

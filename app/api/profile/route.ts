@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token");
-  console.log(token, 'Backend');
   
   if (token) {
     const res = await fetch(

@@ -10,7 +10,6 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     const { isInitialized } = useAuth()
-    console.log(isInitialized);
 
     if (!isInitialized) {
         return <Loader />
