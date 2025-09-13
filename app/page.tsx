@@ -4,6 +4,7 @@ import { Navigation } from "@/components/navigation"
 import { TypingTest } from "@/components/typing-test"
 import { LeaderboardWidget } from "@/components/leaderboard/leaderboard-widget"
 import { useSettings } from "@/lib/settings-context"
+import { Toaster } from "sonner"
 
 export default function HomePage() {
   const { settings } = useSettings()
@@ -16,7 +17,7 @@ export default function HomePage() {
           <h1 className="font-heading text-4xl font-bold mb-4 text-foreground">Type to Unlock Your Speed</h1>
           <p className="text-muted-foreground text-lg">Test your typing speed and climb the leaderboard!</p>
         </div>
-
+        <Toaster  richColors position="bottom-right"/>
         <div>
           <div>
             <TypingTest

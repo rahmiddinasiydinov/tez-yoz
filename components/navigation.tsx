@@ -46,10 +46,13 @@ export function Navigation() {
 
   const navItems = [
     { href: "/", label: t('test'), icon: Keyboard },
-    {href: "/leaderboard", label: t('leaderboard'), icon: Trophy},
-    {href: "/settings", label: t('settings'), icon: Settings},
-    {href: "/profile", label: t('profile'), icon: User},
+    { href: "/leaderboard", label: t('leaderboard'), icon: Trophy },
+    { href: "/settings", label: t('settings'), icon: Settings },
   ]
+
+  if (user) {
+    navItems.push({ href: "/profile", label: t('profile'), icon: User },)
+  }
 
   const languages = [
     { code: "uz" as const, name: "O'zbek" },
@@ -59,8 +62,8 @@ export function Navigation() {
 
   const themes = [
     { value: "light", label: t('lightMode'), icon: Sun },
-    {value: "dark", label: t('darkMode'), icon: Moon},
-    {value: "system", label: t('systemMode'), icon: Monitor},
+    { value: "dark", label: t('darkMode'), icon: Moon },
+    { value: "system", label: t('systemMode'), icon: Monitor },
   ]
 
   return (

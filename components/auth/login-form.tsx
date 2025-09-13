@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -33,8 +34,10 @@ export function LoginForm() {
     
     if (result.success) {
       router.push("/")
+      toast.success('Logged in!')
     } else {
       setError(result.error || "Login failed")
+      toast.error('Login failed.')
     }
   }
 
