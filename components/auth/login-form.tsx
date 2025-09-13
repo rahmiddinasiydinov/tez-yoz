@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -19,6 +20,7 @@ export function LoginForm() {
   const [error, setError] = useState("")
   const { login, isLoading } = useAuth()
   const router = useRouter()
+  console.log(isLoading, 'login');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,11 +32,13 @@ export function LoginForm() {
     }
 
     const result = await login(email, password)
-    
+
     if (result.success) {
       router.push("/")
+      toast.success('Logged in!')
     } else {
       setError(result.error || "Login failed")
+      toast.error('Login failed.')
     }
   }
 

@@ -24,6 +24,7 @@ export function Navigation() {
   const { t, language, setLanguage } = useI18n()
   const { theme, setTheme } = useTheme()
   const [hasToken, setHasToken] = useState(false)
+  
 
   useEffect(() => {
     setHasToken(!!safeStorage.getItem("typeSpeed_token"))
@@ -205,7 +206,7 @@ export function Navigation() {
             </DropdownMenu>
 
             {/* User Menu */}
-            {(user || hasToken) ? (
+            {user ? (
               user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

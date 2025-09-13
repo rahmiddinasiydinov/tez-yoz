@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth-context"
 import { SettingsProvider } from "@/lib/settings-context"
 import { I18nProvider } from "@/lib/i18n-context"
-import { Navigation } from "@/components/navigation"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -38,10 +37,9 @@ export default function RootLayout({
           <I18nProvider>
             <AuthProvider>
               <SettingsProvider>
-                <div className="min-h-screen bg-background text-foreground">
-                  <Navigation />
-                  <main className="container mx-auto px-4 py-8">{children}</main>
-                </div>
+                  <div className="min-h-screen bg-background text-foreground">
+                    {children}
+                  </div>
               </SettingsProvider>
             </AuthProvider>
           </I18nProvider>
