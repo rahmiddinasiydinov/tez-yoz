@@ -8,18 +8,42 @@ import type { TestResult } from "@/lib/typing-engine"
 import { getUserRank } from "@/lib/leaderboard-engine"
 import { useAuth } from "@/lib/auth-context"
 import { useI18n } from "@/lib/i18n-context"
-import { useMemo } from "react"
+import { memo, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
+import { saveTesResult } from "@/lib/actions/save-results"
+import { toast } from "sonner"
+import { SavingResultsIndicator } from "./saving-results-indicator"
 
 interface TestResultsProps {
   result: TestResult
   onRestart: () => void
 }
 
-export function TestResults({ result, onRestart }: TestResultsProps) {
+export default function TestResults({ result, onRestart }: TestResultsProps) {
   const { user } = useAuth()
   const { t } = useI18n()
+  const [isSaved, setIsSaved] = useState(false)
 
+  useEffect(() => {
+    if (!isSaved) {
+      console.log('result is rerunning', isSaved);
+
+      async function saveResult() {
+        const response = await saveTesResult(result)
+        if (response.success) {
+          toast.success(response.message)
+        } else {
+          if (!response.status || response.status !== 401) {
+            toast.error(response.message || 'Unexpected error happened')
+          } else{
+            toast.warning('Please log in to save your results!')
+          }
+        }
+        setIsSaved(true)
+      }
+      saveResult()
+    }
+  }, [])
   const userRank = useMemo(() => {
     if (!user) return null
     return getUserRank(user.id, {
@@ -50,6 +74,7 @@ export function TestResults({ result, onRestart }: TestResultsProps) {
   return (
     <div className="max-full mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
       {/* Header */}
+      <SavingResultsIndicator isVisible={!isSaved} />
       <div className="text-center space-y-2">
         <h2 className="font-heading text-2xl sm:text-3xl font-bold">{t("testComplete")}</h2>
         <p className="text-sm sm:text-base text-muted-foreground">{t("hereAreResults")}</p>
@@ -189,7 +214,7 @@ export function TestResults({ result, onRestart }: TestResultsProps) {
           {t("tryAgain")}
         </Button>
         {/* There is not share logic for now */}
-        
+
         {/* <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent">
           <Share2 className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
           {t("shareResults")}

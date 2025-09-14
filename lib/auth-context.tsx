@@ -41,13 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null)
 
   const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<UserProfileResponse>('/api/profile', fetcher, {
-    onError: (error) => {
-      console.error('🔥 SWR Error:', error)
-    },
-    onSuccess: (data) => {
-      console.log('🎉 SWR Success:', data)
 
-    }
   },)
 
 

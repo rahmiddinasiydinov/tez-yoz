@@ -1,4 +1,4 @@
-import { UserProfileResponse } from "@/lib/profile";
+import { GameModeResponse } from "@/lib/game-mode";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -8,7 +8,7 @@ export async function GET() {
   
   if (token) {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_API + "/api/users/profile",
+      process.env.NEXT_PUBLIC_API + "/api/gamemode",
       {
         headers: {
           "Authorization": `Bearer ${token.value}`,
@@ -16,7 +16,7 @@ export async function GET() {
       }
     );
 
-    const data: UserProfileResponse = await res.json();
+    const data: GameModeResponse = await res.json();
     return NextResponse.json(data);
   } else {
     return NextResponse.json(null);

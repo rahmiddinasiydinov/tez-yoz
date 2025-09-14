@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useMemo } from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,11 +16,9 @@ import {
 } from "@/lib/typing-engine"
 import { saveTestResult } from "@/lib/statistics-engine"
 import { useAuth } from "@/lib/auth-context"
-import { useSettings } from "@/lib/settings-context"
 import { useI18n } from "@/lib/i18n-context"
-import { TestResults } from "./test-results"
+import TestResults from "./test-results"
 import Link from "next/link"
-import safeStorage from "@/lib/safe-storage"
 import TimeProgress from "./progress/time-progress"
 
 interface TypingTestProps {
@@ -30,8 +28,6 @@ interface TypingTestProps {
 }
 
 export function TypingTest({ testType = "time", testValue = 30, language = "uzbek" }: TypingTestProps) {
-  const { settings } = useSettings()
-
   const { user } = useAuth()
   const { t } = useI18n()
   const [text, setText] = useState("")
@@ -58,6 +54,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   errorsRef.current = errors
   testCompleteRef.current = testComplete
   testValueRef.current = testValue
+
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -107,7 +104,9 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
     setStartTime(Date.now())
 
     if (testType === "time") {
+
       intervalRef.current = setInterval(() => {
+
         setTimeLeft((prev) => {
           if (prev <= 1) {
             // Clear interval before completing test to prevent race conditions
@@ -116,6 +115,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
               intervalRef.current = null
             }
             // Use setTimeout to ensure state updates are processed
+
             setTimeout(() => completeTest(), 0)
             return 0
           }
@@ -127,6 +127,8 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
   const completeTest = useCallback(() => {
     // Prevent multiple completions
+    console.log('complete test is rerunning');
+
     if (testCompleteRef.current) return
 
     const userInput = userInputRef.current
@@ -185,34 +187,6 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
     setTestResult(result)
     saveTestResult(result, user?.id)
-
-    // Update user statistics using consistent storage method
-    if (user) {
-      const currentUser = safeStorage.getJSON<any>("typeSpeed_user", {})
-      const updatedStats = {
-        testsCompleted: currentUser.stats.testsCompleted + 1,
-        bestWpm: Math.max(currentUser.stats.bestWpm, wpm),
-        averageWpm: Math.round(
-          (currentUser.stats.averageWpm * currentUser.stats.testsCompleted + wpm) /
-          (currentUser.stats.testsCompleted + 1),
-        ),
-        averageAccuracy: Math.round(
-          (currentUser.stats.averageAccuracy * currentUser.stats.testsCompleted + accuracy) /
-          (currentUser.stats.testsCompleted + 1),
-        ),
-      }
-
-      const updatedUser = { ...currentUser, stats: updatedStats }
-      safeStorage.setJSON("typeSpeed_user", updatedUser)
-
-      // Use consistent storage method for users list
-      const users = safeStorage.getJSON<any[]>("typeSpeed_users", [])
-      const userIndex = users.findIndex((u: any) => u.id === user.id)
-      if (userIndex !== -1) {
-        users[userIndex] = { ...users[userIndex], stats: updatedStats }
-        safeStorage.setJSON("typeSpeed_users", users)
-      }
-    }
   }, [startTime, testType, testValue, language, user])
 
   const handleInputChange = useCallback(
@@ -260,7 +234,9 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
       if (testType === "words") {
         const wordsTyped = value.trim().split(" ").length
+
         if (value.length >= text.length || wordsTyped >= testValue) {
+          console.log('the same with word');
           completeTest()
         }
       }
@@ -301,7 +277,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
         <Progress value={(Math.min(userInput.trim().split(" ").length, testValue) / testValue) * 100} className="h-2" />
       )}
 
-      {testType === "time" && isActive && <TimeProgress testValue={testValue} isActive={isActive} onComplete={() => {}}/>}
+      {testType === "time" && isActive && <TimeProgress testValue={testValue} isActive={isActive} onComplete={() => { }} />}
 
       <Card className="p-4 sm:p-6 lg:p-8">
         <div className="space-y-4 sm:space-y-6">
