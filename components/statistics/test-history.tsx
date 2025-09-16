@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Download, Search, Calendar } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { getUserTestResults } from "@/lib/statistics-engine"
+import { useI18n } from "@/lib/i18n-context"
 
 export function TestHistory() {
   const { user } = useAuth()
@@ -18,6 +19,7 @@ export function TestHistory() {
   const [typeFilter, setTypeFilter] = useState("all")
   const [sortBy, setSortBy] = useState("date")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const { t } = useI18n()
 
   const allResults = useMemo(() => {
     return getUserTestResults(user?.id)
@@ -78,15 +80,15 @@ export function TestHistory() {
 
   const exportResults = () => {
     const csvContent = [
-      ["Date", "WPM", "Accuracy", "Errors", "Type", "Language", "Duration"].join(","),
+      [t('date'), t('wpm'), t('accuracy'), t('errors'), t('testType'), t('language'), t('testDuration')].join(","),
       ...filteredAndSortedResults.map((result) =>
         [
           new Date(result.completedAt).toLocaleDateString(),
           result.wpm,
           result.accuracy,
           result.errors,
-          result.testType,
-          result.language,
+          t(result.testType),
+          t('language.' + result.language.toLowerCase() as 'language.uzbek'),
           Math.round(result.timeElapsed),
         ].join(","),
       ),
@@ -110,8 +112,8 @@ export function TestHistory() {
         <Card>
           <CardContent className="text-center py-12">
             <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Test History</h3>
-            <p className="text-muted-foreground">Your completed typing tests will appear here.</p>
+            <h3 className="text-lg font-semibold mb-2">{t('notTestingHistory')}</h3>
+            <p className="text-muted-foreground">{t('yourCompletedTyping')}</p>
           </CardContent>
         </Card>
       </div>
@@ -126,11 +128,11 @@ export function TestHistory() {
           <CardTitle className="flex items-center justify-between">
             <span className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-blue-500" />
-              Test History ({filteredAndSortedResults.length} results)
+              {t('testHistoryResults')}: {filteredAndSortedResults.length}
             </span>
             <Button onClick={exportResults} variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
-              Export CSV
+              {t('exportCSV')}
             </Button>
           </CardTitle>
         </CardHeader>
@@ -153,7 +155,7 @@ export function TestHistory() {
                 <SelectValue placeholder="Language" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Languages</SelectItem>
+                <SelectItem value="all">{t('allLanguages')}</SelectItem>
                 {uniqueLanguages.map((lang) => (
                   <SelectItem key={lang} value={lang} className="capitalize">
                     {lang}
@@ -167,7 +169,7 @@ export function TestHistory() {
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="all">{t('allTypes')}</SelectItem>
                 {uniqueTypes.map((type) => (
                   <SelectItem key={type} value={type} className="capitalize">
                     {type}-based
@@ -181,10 +183,10 @@ export function TestHistory() {
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="date">Date</SelectItem>
-                <SelectItem value="wpm">WPM</SelectItem>
-                <SelectItem value="accuracy">Accuracy</SelectItem>
-                <SelectItem value="errors">Errors</SelectItem>
+                <SelectItem value="date">{t('date')}</SelectItem>
+                <SelectItem value="wpm">{t('wpm')}</SelectItem>
+                <SelectItem value="accuracy">{t('accuracy')}</SelectItem>
+                <SelectItem value="errors">{t('errors')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -202,13 +204,13 @@ export function TestHistory() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>WPM</TableHead>
-                  <TableHead>Accuracy</TableHead>
-                  <TableHead>Errors</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Language</TableHead>
-                  <TableHead>Duration</TableHead>
+                  <TableHead>{t("date")}</TableHead>
+                  <TableHead>{t('wpm')}</TableHead>
+                  <TableHead>{t('accuracy')}</TableHead>
+                  <TableHead>{t('errors')}</TableHead>
+                  <TableHead>{t('testType')}</TableHead>
+                  <TableHead>{t('language')}</TableHead>
+                  <TableHead>{t('testDuration')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -222,7 +224,7 @@ export function TestHistory() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={result.wpm >= 60 ? "default" : result.wpm >= 40 ? "secondary" : "outline"}>
-                        {result.wpm} WPM
+                        {result.wpm} {t('wpm')}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -241,12 +243,12 @@ export function TestHistory() {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="capitalize">
-                        {result.testType} ({result.testValue})
+                        {t(result.testType)} ({result.testValue})
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="capitalize">
-                        {result.language}
+                        {t('language.' + result.language.toLowerCase() as 'language.uzbek')}
                       </Badge>
                     </TableCell>
                     <TableCell>{Math.round(result.timeElapsed)}s</TableCell>
