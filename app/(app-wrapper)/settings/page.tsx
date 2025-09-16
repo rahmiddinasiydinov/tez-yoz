@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/navigation"
+import SettingsPageContent from "@/components/settings/page-content"
 import { SettingsPanel } from "@/components/settings/settings-panel"
 
 export default function SettingsPage() {
@@ -6,8 +6,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="font-heading text-3xl font-bold mb-2">Settings</h1>
-          <p className="text-muted-foreground">Customize your typing experience</p>
+          <SettingsPageContent />
         </div>
         <SettingsPanel />
       </main>

@@ -5,16 +5,18 @@ import { Calendar, BarChart3, History } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { StatisticsDashboard } from "@/components/statistics/statistics-dashboard"
 import { TestHistory } from "@/components/statistics/test-history"
+import { useI18n } from "@/lib/i18n-context"
 
 export function UserProfile() {
   const { user } = useAuth()
+  const { t } = useI18n()
 
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">Please log in to view your profile</p>
+            <p className="text-muted-foreground">{t('pleaseLogin')}</p>
           </CardContent>
         </Card>
       </div>
@@ -39,7 +41,7 @@ export function UserProfile() {
         <CardContent>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
+            <span>{t('joined')}: {new Date(user.createdAt).toLocaleDateString()}</span>
           </div>
         </CardContent>
       </Card>
@@ -49,11 +51,11 @@ export function UserProfile() {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
-            Statistics Overview
+            {t('statisticsOverview')}
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
-            Test History
+            {t('testHistory')}
           </TabsTrigger>
         </TabsList>
 

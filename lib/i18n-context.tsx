@@ -17,7 +17,40 @@ interface Translations {
   signOut: string
   viewProfile: string
 
+  //Loading
+  loading: string,
+  checkingAuthentication: string,
+
+  //Profile
+  yourProfile: string,
+  trackYourTyping: string,
+  pleaseLogin: string,
+  joined: string,
+  statisticsOverview: string,
+  testHistory: string,
+  noTestData: string
+  completeSomeTyping: string
+  testsCompletedProfile: string
+  averageWPM: string
+  wpmProgress: string
+  accuracyProgress: string
+  performanceMetrics: string
+  consistencyScore: string
+  improvementRate: string
+  wpmPerDay: string
+  languages: string
+  testTypes: string
+  notTestingHistory: string
+  yourCompletedTyping: string,
+  testHistoryResults: string,
+  exportCSV: string,
+  allLanguages: string,
+  allTypes: string,
+  date: string
+
   // Test Interface
+  pageTitle: string
+  pageDescription: string
   startTyping: string
   timeLeft: string
   wpm: string
@@ -44,6 +77,16 @@ interface Translations {
   darkMode: string
   lightMode: string
   systemMode: string
+  customizeTyping: string
+  display: string,
+  showRealTimeTyping: string,
+  soundEffects: string,
+  keystrokeSounds: string,
+  resetSettings: string,
+  restoreDefaults: string,
+  liveWPM: string,
+  totalTime: string
+  totalChars: string
 
   // Results
   wordsPerMinute: string
@@ -145,7 +188,40 @@ const translations: Record<Language, Translations> = {
     signOut: "Chiqish",
     viewProfile: "Profilni ko'rish",
 
+    //Loading
+    loading: "Yuklanmoqda...",
+    checkingAuthentication: "Autentifikatsiya holati tekshirilmoqda",
+
+    //Profile
+    yourProfile: "Profilingiz",
+    trackYourTyping: "Yozishdagi yutuqlaringiz va rivojlanishingizni kuzatib boring",
+    pleaseLogin: "Profilingizni ko‘rish uchun tizimga kiring",
+    joined: "Qo‘shilgan sana",
+    statisticsOverview: "Statistikaga umumiy nazar",
+    testHistory: "Test tarixi",
+    noTestData: "Hali test ma'lumotlari yo‘q",
+    completeSomeTyping: "Batafsil statistikani ko‘rish uchun bir nechta matn terish testlarini bajaring.",
+    testsCompletedProfile: "Bajarilgan testlar",
+    averageWPM: "O‘rtacha So‘z/Daq",
+    wpmProgress: "So‘z/Daq rivoji",
+    accuracyProgress: "Aniqlik rivoji",
+    performanceMetrics: "Natijalar ko‘rsatkichlari",
+    consistencyScore: "Barqarorlik bahosi",
+    improvementRate: "O‘sish sur’ati",
+    wpmPerDay: "So‘z/Daq kuniga",
+    languages: "Tillar",
+    testTypes: "Test turlari",
+    notTestingHistory: "Test tarixi yo‘q",
+    yourCompletedTyping: "Bajargan matn terish testlaringiz shu yerda ko‘rinadi.",
+    testHistoryResults: "Test tarixi natijalari",
+    exportCSV: "CSV'ni eksport qilish",
+    allLanguages: "Barcha tillar",
+    allTypes: "Barcha turlar",
+    date: "Sana",
+
     // Test Interface
+    pageTitle: "Tezligingizni Sinab Ko‘ring",
+    pageDescription: "Matn terish tezligingizni tekshiring va reytingda yuqoriga ko‘tariling!",
     startTyping: "Yozishni boshlang...",
     timeLeft: "Qolgan vaqt",
     wpm: "So'z/daq",
@@ -172,6 +248,16 @@ const translations: Record<Language, Translations> = {
     darkMode: "Qorong'u",
     lightMode: "Yorug'",
     systemMode: "Tizim",
+    customizeTyping: "Yozish tajribangizni sozlang",
+    display: "Ko‘rinish",
+    showRealTimeTyping: "Matn terish tezligini real vaqtda ko‘rsatish",
+    soundEffects: "Ovoz effektlari",
+    keystrokeSounds: "Tugma bosish va yakunlash ovozlari",
+    resetSettings: "Sozlamalarni tiklash",
+    restoreDefaults: "Standart sozlamalarni tiklash",
+    liveWPM: "Jonli So'z/Daq",
+    totalTime: "Umumiy vaqt",
+    totalChars: "Umumiy belgilar",
 
     // Results
     wordsPerMinute: "Daqiqada so'zlar",
@@ -274,7 +360,40 @@ const translations: Record<Language, Translations> = {
     signOut: "Sign Out",
     viewProfile: "View Profile",
 
+    //Loading
+    loading: 'Loading...',
+    checkingAuthentication: "Checking authentication status",
+
+    //Profile
+    yourProfile: "Your Profile",
+    trackYourTyping: "Track your typing progress and achievements",
+    pleaseLogin: "Please log in to view your profile",
+    joined: 'Joined',
+    statisticsOverview: "Statistics Overview",
+    testHistory: " Test History",
+    noTestData: "No Test Data Yet",
+    completeSomeTyping: "Complete some typing tests to see your detailed statistics here.",
+    testsCompletedProfile: "Tests Completed",
+    averageWPM: "Average WPM",
+    wpmProgress: "WPM Progress",
+    accuracyProgress: "Accuracy Progress",
+    performanceMetrics: "Performance Metrics",
+    consistencyScore: "Consistency Score",
+    improvementRate: "Improvement Rate",
+    wpmPerDay: "WPM/day",
+    languages: "Languages",
+    testTypes: "  Test Types",
+    notTestingHistory: "No Test History",
+    yourCompletedTyping: "Your completed typing tests will appear here.",
+    testHistoryResults: "Test History Results",
+    exportCSV: " Export CSV",
+    allLanguages: "All Languages",
+    allTypes: "All Types",
+    date: "Date",
+
     // Test Interface
+    pageTitle: "Type to Unlock Your Speed",
+    pageDescription: "Test your typing speed and climb the leaderboard!",
     startTyping: "Start typing...",
     timeLeft: "Time left",
     wpm: "WPM",
@@ -301,6 +420,16 @@ const translations: Record<Language, Translations> = {
     darkMode: "Dark",
     lightMode: "Light",
     systemMode: "System",
+    customizeTyping: "Customize your typing experience",
+    display: "Display",
+    showRealTimeTyping: "Show real-time typing speed",
+    soundEffects: "Sound Effects",
+    keystrokeSounds: "Keystroke and completion sounds",
+    resetSettings: "Reset Settings",
+    restoreDefaults: "Restore defaults",
+    liveWPM: "Live WPM",
+    totalTime: "Total Time",
+    totalChars: "Total Characters:",
 
     // Results
     wordsPerMinute: "Words Per Minute",
@@ -400,7 +529,42 @@ const translations: Record<Language, Translations> = {
     signOut: "Выйти",
     viewProfile: "Посмотреть профиль",
 
+    //Loading
+    loading: "Загрузка...",
+    checkingAuthentication: "Проверка статуса аутентификации",
+
+    //Profilfe
+    yourProfile: "Ваш профиль",
+    trackYourTyping: "Отслеживайте свой прогресс и достижения в печати",
+    pleaseLogin: "Войдите, чтобы просмотреть свой профиль",
+    joined: "Присоединился",
+    statisticsOverview: "Обзор статистики",
+    testHistory: "История тестов",
+    noTestData: "Нет данных о тестах",
+    completeSomeTyping: "Пройдите несколько тестов печати, чтобы увидеть подробную статистику.",
+    testsCompletedProfile: "Выполненные тесты",
+    averageWPM: "Средний WPM",
+    wpmProgress: "Прогресс WPM",
+    accuracyProgress: "Прогресс точности",
+    performanceMetrics: "Показатели эффективности",
+    consistencyScore: "Оценка стабильности",
+    improvementRate: "Темп улучшения",
+    wpmPerDay: "WPM/день",
+    languages: "Языки",
+    testTypes: "Типы тестов",
+    notTestingHistory: "История тестов пуста",
+    yourCompletedTyping: "Ваши завершённые тесты по печати появятся здесь.",
+    testHistoryResults: "Результаты истории тестов",
+    exportCSV: "Экспорт CSV",
+    allLanguages: "Все языки",
+    allTypes: "Все типы",
+    date: "Дата",
+
+
+
     // Test Interface
+    pageTitle: "Проверь свою скорость печати",
+    pageDescription: "Тестируй свою скорость и поднимайся в таблице лидеров!",
     startTyping: "Начните печатать...",
     timeLeft: "Осталось времени",
     wpm: "Слов/мин",
@@ -427,6 +591,16 @@ const translations: Record<Language, Translations> = {
     darkMode: "Темная",
     lightMode: "Светлая",
     systemMode: "Системная",
+    customizeTyping: "Настрой свой опыт печати",
+    display: "Отображение",
+    showRealTimeTyping: "Показывать скорость печати в реальном времени",
+    soundEffects: "Звуковые эффекты",
+    keystrokeSounds: "Звуки нажатий и завершения",
+    resetSettings: "Сбросить настройки",
+    restoreDefaults: "Восстановить по умолчанию",
+    liveWPM: "WPM в реальном времени",
+    totalTime: "Общее время",
+    totalChars: "Всего символов",
 
     // Results
     wordsPerMinute: "Слов в минуту",

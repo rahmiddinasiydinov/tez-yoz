@@ -19,11 +19,13 @@ import { TrendingUp, Target, Clock, Zap, Award, Activity, Calendar, Globe } from
 import { useAuth } from "@/lib/auth-context"
 import { calculateStatistics } from "@/lib/statistics-engine"
 import { useMemo } from "react"
+import { useI18n } from "@/lib/i18n-context"
 
 const COLORS = ["#84cc16", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"]
 
 export function StatisticsDashboard() {
   const { user } = useAuth()
+  const { t } = useI18n()
 
   const statistics = useMemo(() => {
     return calculateStatistics(user?.id)
@@ -35,8 +37,8 @@ export function StatisticsDashboard() {
         <Card>
           <CardContent className="text-center py-12">
             <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Test Data Yet</h3>
-            <p className="text-muted-foreground">Complete some typing tests to see your detailed statistics here.</p>
+            <h3 className="text-lg font-semibold mb-2">{t('noTestData')}</h3>
+            <p className="text-muted-foreground">{t('completeSomeTyping')}</p>
           </CardContent>
         </Card>
       </div>
@@ -59,7 +61,7 @@ export function StatisticsDashboard() {
             <div className="flex items-center gap-2">
               <Target className="h-5 w-5 text-blue-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Tests Completed</p>
+                <p className="text-sm text-muted-foreground">{t('testsCompleted')}</p>
                 <p className="text-2xl font-bold">{statistics.totalTests}</p>
               </div>
             </div>
@@ -71,7 +73,7 @@ export function StatisticsDashboard() {
             <div className="flex items-center gap-2">
               <Zap className="h-5 w-5 text-yellow-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Best WPM</p>
+                <p className="text-sm text-muted-foreground">{t('bestWpm')}</p>
                 <p className="text-2xl font-bold">{statistics.bestWpm}</p>
               </div>
             </div>
@@ -83,7 +85,7 @@ export function StatisticsDashboard() {
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Average WPM</p>
+                <p className="text-sm text-muted-foreground">{t('averageAccuracy')}</p>
                 <p className="text-2xl font-bold">{statistics.averageWpm}</p>
               </div>
             </div>
@@ -95,7 +97,7 @@ export function StatisticsDashboard() {
             <div className="flex items-center gap-2">
               <Award className="h-5 w-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Accuracy</p>
+                <p className="text-sm text-muted-foreground">{t('accuracy')}</p>
                 <p className="text-2xl font-bold">{statistics.averageAccuracy}%</p>
               </div>
             </div>
@@ -110,7 +112,7 @@ export function StatisticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-green-500" />
-              WPM Progress
+              {t('wpmProgress')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -136,7 +138,7 @@ export function StatisticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5 text-blue-500" />
-              Accuracy Progress
+              {t('accuracyProgress')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -165,13 +167,13 @@ export function StatisticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-purple-500" />
-              Performance Metrics
+              {t('performanceMetrics')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Consistency Score</span>
+                <span>{t('consistencyScore')}</span>
                 <span>{statistics.consistencyScore}%</span>
               </div>
               <Progress value={statistics.consistencyScore} className="h-2" />
@@ -179,10 +181,10 @@ export function StatisticsDashboard() {
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Improvement Rate</span>
+                <span>{t('improvementRate')}</span>
                 <span className={statistics.improvementRate >= 0 ? "text-green-500" : "text-red-500"}>
                   {statistics.improvementRate >= 0 ? "+" : ""}
-                  {statistics.improvementRate} WPM/day
+                  {statistics.improvementRate} {t('wpmPerDay')}
                 </span>
               </div>
             </div>
@@ -190,11 +192,11 @@ export function StatisticsDashboard() {
             <div className="pt-2 border-t">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>Total Time: {formatTime(statistics.totalTimeTyping)}</span>
+                <span>{t('totalTime')}: {formatTime(statistics.totalTimeTyping)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Target className="h-4 w-4" />
-                <span>Total Characters: {statistics.totalCharacters.toLocaleString()}</span>
+                <span>{t('totalChars')}: {statistics.totalCharacters.toLocaleString()}</span>
               </div>
             </div>
           </CardContent>
@@ -205,7 +207,7 @@ export function StatisticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="h-5 w-5 text-green-500" />
-              Languages
+              {t('languages')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -251,7 +253,7 @@ export function StatisticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-orange-500" />
-              Test Types
+              {t('testTypes')}
             </CardTitle>
           </CardHeader>
           <CardContent>
