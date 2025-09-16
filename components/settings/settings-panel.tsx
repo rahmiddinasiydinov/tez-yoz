@@ -136,14 +136,14 @@ export function SettingsPanel() {
         <CardHeader className="pb-4">
           <CardTitle className="font-heading flex items-center gap-2 text-lg">
             <Eye className="h-5 w-5 text-primary" />
-            Display
+            {t('display')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-sm font-medium">Live {t('wpm')}</Label>
-              <p className="text-xs text-muted-foreground">Show real-time typing speed</p>
+              <Label className="text-sm font-medium">{t('liveWPM')}</Label>
+              <p className="text-xs text-muted-foreground">{t('showRealTimeTyping')}</p>
             </div>
             <Switch
               checked={settings.showWpmLive}
@@ -155,8 +155,8 @@ export function SettingsPanel() {
 
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-sm font-medium">Sound Effects</Label>
-              <p className="text-xs text-muted-foreground">Keystroke and completion sounds</p>
+              <Label className="text-sm font-medium">{t('soundEffects')}</Label>
+              <p className="text-xs text-muted-foreground">{t('keystrokeSounds')}</p>
             </div>
             <Switch
               checked={settings.soundEnabled}
@@ -171,8 +171,8 @@ export function SettingsPanel() {
         <CardContent className="pt-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium">Reset Settings</h3>
-              <p className="text-xs text-muted-foreground">Restore defaults</p>
+              <h3 className="text-sm font-medium">{t('resetSettings')}</h3>
+              <p className="text-xs text-muted-foreground">{t('restoreDefaults')}</p>
             </div>
             <Button
               variant="outline"

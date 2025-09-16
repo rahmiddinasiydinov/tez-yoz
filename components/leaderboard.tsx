@@ -34,6 +34,7 @@ const testTypeOptions = [
 
 const languageOptions = [
   { value: "all", label: "All Languages" },
+  { value: "uzbek", label: "Uzbek" },
   { value: "english", label: "English" },
   { value: "spanish", label: "Spanish" },
   { value: "french", label: "French" },
@@ -49,6 +50,47 @@ export function Leaderboard() {
     testType: "all",
     language: "all",
   })
+
+  const categoryOptions = useMemo(
+    () => [
+      { value: "wpm", label: "Best WPM", icon: Zap },
+      { value: "accuracy", label: "Average Accuracy", icon: Target },
+      { value: "consistency", label: "Consistency", icon: TrendingUp },
+      { value: "tests", label: "Tests Completed", icon: Users },
+    ] as const,
+    []
+  );
+
+  const periodOptions = useMemo(
+    () => [
+      { value: "daily", label: "Last 24 Hours" },
+      { value: "weekly", label: "Last 7 Days" },
+      { value: "monthly", label: "Last 30 Days" },
+      { value: "all-time", label: "All Time" },
+    ] as const,
+    []
+  );
+
+  const testTypeOptions = useMemo(
+    () => [
+      { value: "all", label: "All Types" },
+      { value: "time", label: "Time-based" },
+      { value: "words", label: "Word-based" },
+    ] as const,
+    []
+  );
+
+  const languageOptions = useMemo(
+    () => [
+      { value: "all", label: "All Languages" },
+      { value: "uzbek", label: "Uzbek" },
+      { value: "english", label: "English" },
+      { value: "spanish", label: "Spanish" },
+      { value: "french", label: "French" },
+      { value: "german", label: "German" },
+    ] as const,
+    []
+  );
 
   const leaderboard = useMemo(() => {
     return generateLeaderboard(filters)
@@ -90,11 +132,7 @@ export function Leaderboard() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="font-heading text-3xl font-bold mb-2">{t("topTypists")}</h1>
-        <p className="text-muted-foreground">{t("seeHowYouRank")}</p>
-      </div>
+
 
       {/* Filters */}
       <Card>
