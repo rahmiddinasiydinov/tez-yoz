@@ -15,23 +15,59 @@ import {
   Pie,
   Cell,
 } from "recharts"
-import { TrendingUp, Target, Clock, Zap, Award, Activity, Calendar, Globe } from "lucide-react"
+import { TrendingUp, Target, Clock, Zap, Award, Activity, Calendar, Globe, TestTube, BarChart3 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { calculateStatistics } from "@/lib/statistics-engine"
 import { useMemo } from "react"
 import { useI18n } from "@/lib/i18n-context"
+import useSWR from "swr"
+import { StatsResponse } from "@/lib/stats"
+import Spinner from "../spinner"
+import { ChartConfig, ChartTooltip, ChartTooltipContent } from "../ui/chart"
 
 const COLORS = ["#84cc16", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"]
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url, {
+    credentials: 'include'
+  })
+
+  return await res.json()
+}
+
+const chartConfig = {
+  views: {
+    label: "Page Views",
+  },
+  desktop: {
+    label: "Desktop",
+    color: "var(--chart-1)",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "var(--chart-2)",
+  },
+} satisfies ChartConfig
 
 export function StatisticsDashboard() {
   const { user } = useAuth()
   const { t } = useI18n()
 
-  const statistics = useMemo(() => {
-    return calculateStatistics(user?.id)
-  }, [user?.id])
+  const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<StatsResponse>('/api/stats', fetcher)
+  const statistics = data?.data?.stats || null
+  console.log(data);
+  if (isFetching) {
+    return <div className="max-w-6xl mx-auto">
+      <Card>
+        <CardContent className="flex items-center text-center py-12 flex-col">
+          <Spinner />
+          <h3 className="text-lg font-semibold mb-2">{t('loading')}</h3>
+        </CardContent>
+      </Card>
+    </div>
+  }
 
-  if (statistics.totalTests === 0) {
+  if (!statistics) {
     return (
       <div className="max-w-6xl mx-auto">
         <Card>
@@ -62,7 +98,7 @@ export function StatisticsDashboard() {
               <Target className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-sm text-muted-foreground">{t('testsCompleted')}</p>
-                <p className="text-2xl font-bold">{statistics.totalTests}</p>
+                <p className="text-2xl font-bold">{statistics.totalAttempts}</p>
               </div>
             </div>
           </CardContent>
@@ -106,8 +142,47 @@ export function StatisticsDashboard() {
       </div>
 
       {/* Progress Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 capitalize">
+              <BarChart3 className="h-5 w-5 text-blue-500" />
+              {t('tests')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  accessibilityLayer
+                  data={statistics.progressChart.map(data => ({ date: data.date, totalTests: data.attemptsCount }))}
+                  margin={{
+                    left: 12,
+                    right: 12,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
+                  <Tooltip
+                    labelFormatter={(date) => new Date(date).toLocaleDateString()}
+                    formatter={(value) => [`${value}%`, t('accuracy')]}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="totalTests"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    dot={{ fill: "#3b82f6" }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* WPM Progression */}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -118,7 +193,9 @@ export function StatisticsDashboard() {
           <CardContent>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={statistics.wmpProgression}>
+                <LineChart
+                  data={statistics.progressChart.map(data => ({ date: data.date, averageWPM: data.averageWpm }))}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
                   <YAxis />
@@ -126,14 +203,15 @@ export function StatisticsDashboard() {
                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
                     formatter={(value) => [`${value} WPM`, "Speed"]}
                   />
-                  <Line type="monotone" dataKey="wpm" stroke="#84cc16" strokeWidth={2} dot={{ fill: "#84cc16" }} />
+                  <Line type="monotone" dataKey="averageWPM" stroke="#84cc16" strokeWidth={2} dot={{ fill: "#84cc16" }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
-
         {/* Accuracy Progression */}
+
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -144,15 +222,26 @@ export function StatisticsDashboard() {
           <CardContent>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={statistics.accuracyProgression}>
+                <LineChart
+                  accessibilityLayer
+                  data={statistics.progressChart.map(data => ({ date: data.date, averageAccuracy: data.averageAccuracy }))}
+                  margin={{
+                    left: 12,
+                    right: 12,
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
-                  <YAxis domain={[0, 100]} />
                   <Tooltip
                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
-                    formatter={(value) => [`${value}%`, "Accuracy"]}
+                    formatter={(value) => [`${value}%`, t('accuracy')]}
                   />
-                  <Line type="monotone" dataKey="accuracy" stroke="#3b82f6" strokeWidth={2} dot={{ fill: "#3b82f6" }} />
+                  <Line
+                    type="monotone"
+                    dataKey="averageAccuracy"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    dot={{ fill: "#3b82f6" }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -160,10 +249,11 @@ export function StatisticsDashboard() {
         </Card>
       </div>
 
+
       {/* Detailed Statistics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Performance Metrics */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-purple-500" />
@@ -200,10 +290,10 @@ export function StatisticsDashboard() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Tests by Language */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="h-5 w-5 text-green-500" />
@@ -246,10 +336,10 @@ export function StatisticsDashboard() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Test Types */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-orange-500" />
@@ -269,7 +359,7 @@ export function StatisticsDashboard() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )
