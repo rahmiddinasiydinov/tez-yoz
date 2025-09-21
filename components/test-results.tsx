@@ -15,7 +15,7 @@ import { toast } from "sonner"
 import { SavingResultsIndicator } from "./saving-results-indicator"
 
 interface TestResultsProps {
-  result: TestResult
+  result: TestResult 
   onRestart: () => void
 }
 
@@ -29,13 +29,14 @@ export default function TestResults({ result, onRestart }: TestResultsProps) {
       console.log('result is rerunning', isSaved);
 
       async function saveResult() {
+        result.userId = user?.id
         const response = await saveTesResult(result)
         if (response.success) {
           toast.success(response.message)
         } else {
           if (!response.status || response.status !== 401) {
             toast.error(response.message || 'Unexpected error happened')
-          } else{
+          } else {
             toast.warning('Please log in to save your results!')
           }
         }
