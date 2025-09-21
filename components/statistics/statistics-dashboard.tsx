@@ -165,7 +165,7 @@ export function StatisticsDashboard() {
                   <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
                   <Tooltip
                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
-                    formatter={(value) => [`${value}%`, t('accuracy')]}
+                    formatter={(value) => [`${value}%`, t('tests')]}
                   />
                   <Line
                     type="monotone"
@@ -201,7 +201,7 @@ export function StatisticsDashboard() {
                   <YAxis />
                   <Tooltip
                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
-                    formatter={(value) => [`${value} WPM`, "Speed"]}
+                    formatter={(value) => [`${value}`, t("wpm")]}
                   />
                   <Line type="monotone" dataKey="averageWPM" stroke="#84cc16" strokeWidth={2} dot={{ fill: "#84cc16" }} />
                 </LineChart>
