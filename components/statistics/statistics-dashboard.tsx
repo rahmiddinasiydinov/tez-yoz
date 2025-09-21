@@ -95,7 +95,7 @@ export function StatisticsDashboard() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-blue-500" />
+              <Award className="h-5 w-5 text-purple-500" />
               <div>
                 <p className="text-sm text-muted-foreground">{t('testsCompleted')}</p>
                 <p className="text-2xl font-bold">{statistics.totalAttempts}</p>
@@ -131,7 +131,7 @@ export function StatisticsDashboard() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-purple-500" />
+              <Target className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-sm text-muted-foreground">{t('accuracy')}</p>
                 <p className="text-2xl font-bold">{statistics.averageAccuracy}%</p>
