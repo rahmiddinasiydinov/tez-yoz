@@ -11,6 +11,8 @@ import { useAuth } from "@/lib/auth-context"
 import { generateLeaderboard, getUserRank, type LeaderboardFilters } from "@/lib/leaderboard-engine"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import useSWR from "swr"
+import { LeaderboardResponse } from "@/lib/leaderboard"
 
 const categoryOptions = [
   { value: "wpm", label: "Best WPM", icon: Zap },
@@ -40,6 +42,14 @@ const languageOptions = [
   { value: "french", label: "French" },
   { value: "german", label: "German" },
 ] as const
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url, {
+    credentials: 'include'
+  })
+
+  return await res.json()
+}
 
 export function Leaderboard() {
   const { user } = useAuth()
@@ -92,9 +102,11 @@ export function Leaderboard() {
     []
   );
 
-  const leaderboard = useMemo(() => {
-    return generateLeaderboard(filters)
-  }, [filters])
+  const { data, isLoading, error } = useSWR<LeaderboardResponse>('/api/leaderboard', fetcher)
+  const leaderboard = data?.data?.leaderboard || [];
+  console.log(leaderboard);
+  
+
 
   const userRank = useMemo(() => {
     return user ? getUserRank(user.id, filters) : null
@@ -135,7 +147,7 @@ export function Leaderboard() {
 
 
       {/* Filters */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
@@ -215,7 +227,7 @@ export function Leaderboard() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Tabs defaultValue="global" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
@@ -252,10 +264,10 @@ export function Leaderboard() {
                 <div className="space-y-2">
                   {leaderboard.slice(0, 50).map((entry, index) => (
                     <div
-                      key={entry.userId}
+                      key={entry.username}
                       className={cn(
                         "flex items-center gap-4 p-4 rounded-lg border transition-colors",
-                        entry.userId === user?.id && "bg-accent/50 border-accent",
+                        entry.username === user?.username && "bg-accent/50 border-accent",
                         entry.rank <= 3 && "bg-gradient-to-r from-yellow-500/10 to-transparent",
                       )}
                     >
@@ -275,24 +287,24 @@ export function Leaderboard() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-semibold">{entry.username}</span>
-                            {entry.badge && <span className="text-lg">{entry.badge}</span>}
-                            {entry.userId === user?.id && (
+                            {/* {entry.badge && <span className="text-lg">{entry.badge}</span>} */}
+                            {entry.username === user?.username && (
                               <Badge variant="secondary" className="text-xs">
                                 {t("you")}
                               </Badge>
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {entry.testsCompleted} {t("testsCompleted")}
+                            {entry.attempts} {t("testsCompleted")}
                           </p>
                         </div>
                       </div>
 
                       {/* Score */}
                       <div className="text-right">
-                        <div className="text-2xl font-bold">{formatScore(entry.score, filters.category)}</div>
+                        <div className="text-2xl font-bold">{formatScore(entry.value, filters.category)}</div>
                         <div className="text-sm text-muted-foreground">
-                          {t("avg")}: {entry.averageWpm} {t("wpm")}, {entry.averageAccuracy}%
+                          {t("best")}: {entry.bestAttempt.wpm} {t("wpm")}, {entry.bestAttempt.accuracy}%
                         </div>
                       </div>
                     </div>

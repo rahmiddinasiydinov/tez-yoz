@@ -1,29 +1,36 @@
 export interface TypingStats {
-  wpm: number
-  accuracy: number
-  errors: number
-  correctChars: number
-  totalChars: number
-  timeElapsed: number
+  wpm: number;
+  accuracy: number;
+  errors: number;
+  correctChars: number;
+  totalChars: number;
+  timeElapsed: number;
 }
 
 export interface TestResult extends TypingStats {
-  testType: "time" | "words"
-  testValue: number
-  language: string
-  completedAt: string
+  testType: "time" | "words";
+  testValue: number;
+  language: string;
+  completedAt: string;
+  userId?: string;
 }
 
-export const calculateWPM = (correctChars: number, timeInSeconds: number): number => {
-  if (timeInSeconds === 0) return 0
+export const calculateWPM = (
+  correctChars: number,
+  timeInSeconds: number
+): number => {
+  if (timeInSeconds === 0) return 0;
   // Standard WPM calculation: (characters / 5) / (time in minutes)
-  return Math.round(correctChars / 5 / (timeInSeconds / 60))
-}
+  return Math.round(correctChars / 5 / (timeInSeconds / 60));
+};
 
-export const calculateAccuracy = (correctChars: number, totalChars: number): number => {
-  if (totalChars === 0) return 100
-  return Math.round((correctChars / totalChars) * 100)
-}
+export const calculateAccuracy = (
+  correctChars: number,
+  totalChars: number
+): number => {
+  if (totalChars === 0) return 100;
+  return Math.round((correctChars / totalChars) * 100);
+};
 
 export const getTextSamples = (language: string): string[] => {
   const samples = {
@@ -65,53 +72,57 @@ export const getTextSamples = (language: string): string[] => {
       "Die deutsche Sprache hat eine reiche Geschichte und Literatur. Viele berühmte Dichter und Denker haben auf Deutsch geschrieben.",
       "Deutschland ist bekannt für seine Ingenieurskunst und Präzision. Die deutsche Automobilindustrie ist weltweit führend.",
     ],
-  }
+  };
 
-  return samples[language as keyof typeof samples] || samples.uzbek
-}
+  return samples[language as keyof typeof samples] || samples.uzbek;
+};
 
 export const getRandomText = (language: string, wordCount?: number): string => {
-  const samples = getTextSamples(language)
+  const samples = getTextSamples(language);
 
   if (wordCount) {
     // For word-based tests, generate exactly the requested number of words
-    let result = ""
-    let currentWords = 0
+    let result = "";
+    let currentWords = 0;
 
     while (currentWords < wordCount) {
-      const randomSample = samples[Math.floor(Math.random() * samples.length)]
-      const words = randomSample.split(" ")
+      const randomSample = samples[Math.floor(Math.random() * samples.length)];
+      const words = randomSample.split(" ");
 
       for (const word of words) {
-        if (currentWords >= wordCount) break
-        result += (currentWords > 0 ? " " : "") + word
-        currentWords++
+        if (currentWords >= wordCount) break;
+        result += (currentWords > 0 ? " " : "") + word;
+        currentWords++;
       }
     }
 
-    return result
+    return result;
   }
 
   // For time-based tests, generate longer text by combining multiple samples
-  const numSamples = Math.floor(Math.random() * 3) + 2 // 2-4 samples
-  let combinedText = ""
+  const numSamples = Math.floor(Math.random() * 3) + 2; // 2-4 samples
+  let combinedText = "";
 
   for (let i = 0; i < numSamples; i++) {
-    const randomSample = samples[Math.floor(Math.random() * samples.length)]
-    combinedText += (i > 0 ? " " : "") + randomSample
+    const randomSample = samples[Math.floor(Math.random() * samples.length)];
+    combinedText += (i > 0 ? " " : "") + randomSample;
   }
 
-  return combinedText
-}
+  return combinedText;
+};
 
-export const generateAdditionalText = (language: string, currentText: string, minLength = 200): string => {
-  const samples = getTextSamples(language)
-  let additionalText = currentText
+export const generateAdditionalText = (
+  language: string,
+  currentText: string,
+  minLength = 200
+): string => {
+  const samples = getTextSamples(language);
+  let additionalText = currentText;
 
   while (additionalText.length < minLength) {
-    const randomSample = samples[Math.floor(Math.random() * samples.length)]
-    additionalText += " " + randomSample
+    const randomSample = samples[Math.floor(Math.random() * samples.length)];
+    additionalText += " " + randomSample;
   }
 
-  return additionalText
-}
+  return additionalText;
+};
