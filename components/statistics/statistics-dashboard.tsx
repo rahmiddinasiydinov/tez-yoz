@@ -24,6 +24,7 @@ import useSWR from "swr"
 import { StatsResponse } from "@/lib/stats"
 import Spinner from "../spinner"
 import { ChartConfig, ChartTooltip, ChartTooltipContent } from "../ui/chart"
+import Loader from "../loader/loader"
 
 const COLORS = ["#84cc16", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"]
 
@@ -57,14 +58,7 @@ export function StatisticsDashboard() {
   const statistics = data?.data?.stats || null
   console.log(data);
   if (isFetching) {
-    return <div className="max-w-6xl mx-auto">
-      <Card>
-        <CardContent className="flex items-center text-center py-12 flex-col">
-          <Spinner />
-          <h3 className="text-lg font-semibold mb-2">{t('loading')}</h3>
-        </CardContent>
-      </Card>
-    </div>
+    return <Loader />
   }
 
   if (!statistics) {

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import useSWR from "swr"
 import { LeaderboardResponse } from "@/lib/leaderboard"
+import Loader from "./loader/loader"
 
 const categoryOptions = [
   { value: "wpm", label: "Best WPM", icon: Zap },
@@ -105,7 +106,6 @@ export function Leaderboard() {
   const { data, isLoading, error } = useSWR<LeaderboardResponse>('/api/leaderboard', fetcher)
   const leaderboard = data?.data?.leaderboard || [];
   console.log(leaderboard);
-  
 
 
   const userRank = useMemo(() => {
@@ -242,8 +242,9 @@ export function Leaderboard() {
         </TabsList>
 
         <TabsContent value="global">
+          {isLoading && <Loader />}
           {/* Global Leaderboard */}
-          <Card>
+          {!isLoading && <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CategoryIcon className="h-5 w-5" />
@@ -312,7 +313,7 @@ export function Leaderboard() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </Card>}
         </TabsContent>
 
         <TabsContent value="personal">
