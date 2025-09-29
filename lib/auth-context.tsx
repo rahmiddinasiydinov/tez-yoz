@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import safeStorage from "./safe-storage"
 import { registerAction } from "@/lib/actions/register"
 import { verifyAction as verifyAction } from "@/lib/actions/verify"
@@ -36,14 +36,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false);
 
   let user: User | null = null
   const [token, setToken] = useState<string | null>(null)
 
   const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<UserProfileResponse>('/api/profile', fetcher)
 
-
-  const isInitialized = !isFetching && !isValidating
+  useEffect(() => {
+    if (!isInitialized && !isFetching && !isValidating) {
+      setIsInitialized(true);
+    }
+  }, [isFetching, isValidating])
 
 
   if (data?.data) {
@@ -75,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signup = async (
+  const signup = useCallback(async (
     username: string,
     email: string,
     password: string,
@@ -90,9 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const verify = async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
+  const verify = useCallback(async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true)
     try {
       const res: any = await verifyAction(email, code)
@@ -108,9 +112,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const response = await fetch('/api/logout');
     const data = await response.json()
     safeStorage.removeItem('user');
@@ -123,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.error('Error happened with logging out.')
     }
 
-  }
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, login, signup, verify, logout, isLoading, token, isInitialized }}>
