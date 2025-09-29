@@ -257,6 +257,8 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
         className = "bg-accent text-accent-foreground animate-pulse"
       }
 
+      className += " text-[24px]"
+
       chars.push(
         <span key={i} className={className}>
           {text[i]}
@@ -311,7 +313,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
           <div className="relative">
             <div
-              className="text-sm sm:text-base lg:text-lg leading-relaxed font-mono p-3 sm:p-4 lg:p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20 min-h-[150px] sm:min-h-[200px] cursor-text overflow-hidden"
+              className="text-sm sm:text-base lg:text-lg leading-relaxed font-mono p-3 sm:p-4 lg:p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20 min-h-[150px] sm:min-h-[200px] cursor-text overflow-hidden text-10"
               onClick={() => inputRef.current?.focus()}
             >
               {renderText()}
