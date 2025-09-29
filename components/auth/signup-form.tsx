@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { memo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,7 +14,7 @@ import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 
-export function SignupForm() {
+export const SignupForm = memo(function SignupForm() {
   const [step, setStep] = useState<"signup" | "verify">("signup")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
@@ -173,3 +173,4 @@ export function SignupForm() {
     </Card>
   )
 }
+)
