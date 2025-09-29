@@ -7,9 +7,10 @@ import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Clock, Hash, Globe, Eye, RotateCcw } from "lucide-react"
-import { useSettings } from "@/lib/settings-context"
+import { TestSettings, useSettings } from "@/lib/settings-context"
 import { useI18n } from "@/lib/i18n-context"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 const languageOptions = [
   { value: "uzbek", label: "O'zbek", flag: "🇺🇿" },
@@ -23,6 +24,16 @@ const languageOptions = [
 export function SettingsPanel() {
   const { settings, updateSettings, resetSettings } = useSettings()
   const { t } = useI18n()
+
+  function handleUpdateSettings(newSettings: Partial<TestSettings>) {
+    updateSettings(newSettings);
+    toast.success(t('settingsUpdated'));
+  }
+
+  function handleResetSettings() {
+    resetSettings();
+    toast.success(t('settingsReset'));
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-4">
@@ -40,7 +51,7 @@ export function SettingsPanel() {
             <div className="flex gap-2">
               <Button
                 variant={settings.testType === "time" ? "default" : "outline"}
-                onClick={() => updateSettings({ testType: "time" })}
+                onClick={() => handleUpdateSettings({ testType: "time" })}
                 className="flex items-center gap-2 h-9"
                 size="sm"
               >
@@ -49,7 +60,7 @@ export function SettingsPanel() {
               </Button>
               <Button
                 variant={settings.testType === "words" ? "default" : "outline"}
-                onClick={() => updateSettings({ testType: "words" })}
+                onClick={() => handleUpdateSettings({ testType: "words" })}
                 className="flex items-center gap-2 h-9"
                 size="sm"
               >
@@ -72,7 +83,7 @@ export function SettingsPanel() {
                       "cursor-pointer px-2 py-1 text-xs hover:bg-accent",
                       settings.selectedTime === time && "bg-primary text-primary-foreground",
                     )}
-                    onClick={() => updateSettings({ selectedTime: time })}
+                    onClick={() => handleUpdateSettings({ selectedTime: time })}
                   >
                     {time}s
                   </Badge>
@@ -94,7 +105,7 @@ export function SettingsPanel() {
                       "cursor-pointer px-2 py-1 text-xs hover:bg-accent",
                       settings.selectedWords === words && "bg-primary text-primary-foreground",
                     )}
-                    onClick={() => updateSettings({ selectedWords: words })}
+                    onClick={() => handleUpdateSettings({ selectedWords: words })}
                   >
                     {words}
                   </Badge>
@@ -119,7 +130,7 @@ export function SettingsPanel() {
               <Button
                 key={lang.value}
                 variant={settings.language === lang.value ? "default" : "outline"}
-                onClick={() => updateSettings({ language: lang.value })}
+                onClick={() => handleUpdateSettings({ language: lang.value })}
                 className="flex items-center gap-2 h-10 text-sm"
                 size="sm"
               >
@@ -147,7 +158,7 @@ export function SettingsPanel() {
             </div>
             <Switch
               checked={settings.showWpmLive}
-              onCheckedChange={(checked) => updateSettings({ showWpmLive: checked })}
+              onCheckedChange={(checked) => handleUpdateSettings({ showWpmLive: checked })}
             />
           </div>
 
@@ -160,7 +171,7 @@ export function SettingsPanel() {
             </div>
             <Switch
               checked={settings.soundEnabled}
-              onCheckedChange={(checked) => updateSettings({ soundEnabled: checked })}
+              onCheckedChange={(checked) => handleUpdateSettings({ soundEnabled: checked })}
             />
           </div>
         </CardContent>
@@ -176,7 +187,7 @@ export function SettingsPanel() {
             </div>
             <Button
               variant="outline"
-              onClick={resetSettings}
+              onClick={handleResetSettings}
               size="sm"
               className="flex items-center gap-2 bg-transparent"
             >
