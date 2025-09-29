@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo } from "react"
+import React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
   const [errors, setErrors] = useState(0)
   const [testComplete, setTestComplete] = useState(false)
   const [testResult, setTestResult] = useState<TestResult | null>(null)
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -58,6 +59,8 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
   // Cleanup interval on unmount
   useEffect(() => {
+    inputRef.current?.focus();
+    setIsInputFocused(true);
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -314,7 +317,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
           <div className="relative">
             <div
               className="text-sm sm:text-base lg:text-lg leading-relaxed font-mono p-3 sm:p-4 lg:p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20 min-h-[150px] sm:min-h-[200px] cursor-text overflow-hidden text-10"
-              onClick={() => inputRef.current?.focus()}
+              onClick={(e) => { inputRef.current?.focus(); setIsInputFocused(true)}}
             >
               {renderText()}
             </div>
@@ -335,8 +338,8 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
           </div>
 
           {!isActive && !testComplete && (
-            <div className="text-center space-y-2">
-              <p className="text-base sm:text-lg text-muted-foreground">{t("clickToStart")}</p>
+            <div className={`text-center space-y-2`}>
+              <p className={`text-base sm:text-lg  ${isInputFocused ?? "text-muted-foreground"}`}>{t("clickToStart")}</p>
               <p className="text-xs sm:text-sm text-muted-foreground">{t("startTypingInstruction")}</p>
             </div>
           )}
