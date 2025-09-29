@@ -22,7 +22,7 @@ interface SettingsContextType {
   resetSettings: () => void
 }
 
-const defaultSettings: TestSettings = {
+export const defaultSettings: TestSettings = {
   testType: "time",
   timeOptions: [15, 30, 60, 120],
   wordOptions: [15, 30, 50, 100],

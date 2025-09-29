@@ -87,6 +87,8 @@ interface Translations {
   liveWPM: string,
   totalTime: string
   totalChars: string
+  settingsUpdated: string
+  settingsReset: string
 
   // Results
   wordsPerMinute: string
@@ -258,6 +260,8 @@ const translations: Record<Language, Translations> = {
     liveWPM: "Jonli So'z/Daq",
     totalTime: "Umumiy vaqt",
     totalChars: "Umumiy belgilar",
+    settingsUpdated: "Sozlamalar yangilandi!",
+    settingsReset: "Sozlamalar standart holatga tiklandi!",
 
     // Results
     wordsPerMinute: "Daqiqada so'zlar",
@@ -430,6 +434,8 @@ const translations: Record<Language, Translations> = {
     liveWPM: "Live WPM",
     totalTime: "Total Time",
     totalChars: "Total Characters:",
+    settingsUpdated: "Settings updated!",
+    settingsReset: "Settings reset to default!",
 
     // Results
     wordsPerMinute: "Words Per Minute",
@@ -601,6 +607,9 @@ const translations: Record<Language, Translations> = {
     liveWPM: "WPM в реальном времени",
     totalTime: "Общее время",
     totalChars: "Всего символов",
+    settingsUpdated: "Настройки обновлены!",
+    settingsReset: "Настройки сброшены по умолчанию!",
+
 
     // Results
     wordsPerMinute: "Слов в минуту",
