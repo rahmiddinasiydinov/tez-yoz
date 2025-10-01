@@ -159,7 +159,7 @@ export function StatisticsDashboard() {
                   <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
                   <Tooltip
                     labelFormatter={(date) => new Date(date).toLocaleDateString()}
-                    formatter={(value) => [`${value}%`, t('tests')]}
+                    formatter={(value) => [`${value}`, t('tests')]}
                   />
                   <Line
                     type="monotone"
