@@ -105,7 +105,6 @@ export function Leaderboard() {
 
   const { data, isLoading, error } = useSWR<LeaderboardResponse>('/api/leaderboard', fetcher)
   const leaderboard = data?.data?.leaderboard || [];
-  console.log(leaderboard);
 
 
   const userRank = useMemo(() => {

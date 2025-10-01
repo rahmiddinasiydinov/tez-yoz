@@ -44,19 +44,6 @@ export async function saveTesResult(data: TestResult): Promise<ApiResponse> {
       );
 
       if (foundMode?.id) {
-        console.log(
-          JSON.stringify({
-            language: data.language.toUpperCase(),
-            gameModeId: foundMode.id,
-            wpm: data.wpm,
-            accuracy: data.accuracy,
-            errors: data.errors,
-            correctChars: data.correctChars,
-            totalChars: data.totalChars,
-            timeElapsed: data.timeElapsed,
-            userId: data.userId,
-          })
-        );
 
         const response = await fetch(
           process.env.NEXT_PUBLIC_API + "/api/attempt",
@@ -82,12 +69,10 @@ export async function saveTesResult(data: TestResult): Promise<ApiResponse> {
 
         if (!response.ok) {
           const data = await response.json();
-          console.log(data);
 
           return { success: false, message: "Could not send results" };
         }
         const resData = await response.json();
-        console.log(resData);
 
         return { success: true, message: "Result is successfully saved!" };
       } else {
