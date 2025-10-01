@@ -26,7 +26,6 @@ export default function TestResults({ result, onRestart }: TestResultsProps) {
 
   useEffect(() => {
     if (!isSaved) {
-      console.log('result is rerunning', isSaved);
 
       async function saveResult() {
         result.userId = user?.id

@@ -17,8 +17,6 @@ export async function GET() {
     );
 
     const data:StatsResponse = await res.json();
-    console.log(data);
-    
     
     return NextResponse.json(data);
   } else {

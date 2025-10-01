@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/navigation"
 import { LoginForm } from "@/components/auth/login-form"
 
 export default function LoginPage() {

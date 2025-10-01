@@ -130,7 +130,6 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
   const completeTest = useCallback(() => {
     // Prevent multiple completions
-    console.log('complete test is rerunning');
 
     if (testCompleteRef.current) return
 
@@ -239,7 +238,6 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
         const wordsTyped = value.trim().split(" ").length
 
         if (value.length >= text.length || wordsTyped >= testValue) {
-          console.log('the same with word');
           completeTest()
         }
       }

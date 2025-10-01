@@ -1,8 +1,6 @@
-import { Navigation } from "@/components/navigation"
 import { SignupForm } from "@/components/auth/signup-form"
 
 export default function SignupPage() {
-  console.log('reloaded');  
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">

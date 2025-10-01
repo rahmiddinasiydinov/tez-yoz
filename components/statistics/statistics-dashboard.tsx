@@ -56,7 +56,6 @@ export function StatisticsDashboard() {
 
   const { data, isLoading: isFetching, error: swrError, isValidating } = useSWR<StatsResponse>('/api/stats', fetcher)
   const statistics = data?.data?.stats || null
-  console.log(data);
   if (isFetching) {
     return <Loader />
   }
