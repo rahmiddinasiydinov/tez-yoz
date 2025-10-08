@@ -23,6 +23,9 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "TezYoz - Tez yozish testi",
   description: "Zamonaviy tez yozish testi ilovasi reyting va batafsil statistika bilan",
+  icons: {
+    icon:"/keyboard.png", // app favicon
+  },
   generator: "v0.app",
 }
 
