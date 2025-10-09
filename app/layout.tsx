@@ -21,13 +21,72 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "TezYoz - Tez yozish testi",
-  description: "Zamonaviy tez yozish testi ilovasi reyting va batafsil statistika bilan",
-  icons: {
-    icon:"/keyboard.png", // app favicon
+  title: {
+    default: "TezYoz - Tez yozish testi",
+    template: "%s | TezYoz",
   },
-  generator: "v0.app",
-}
+  description:
+    "TezYoz — bu tez yozish mahoratingizni sinovdan o‘tkazadigan interaktiv o‘yin! Reyting, natijalar va doimiy rivojlanish uchun mukammal joy.",
+  keywords: [
+    "tez yozish",
+    "tez yozish testi",
+    "typing test",
+    "typing speed",
+    "tez yozuv",
+    "tez yozish o‘yin",
+    "TezYoz",
+  ],
+  authors: [{ name: "TezYoz Team" }],
+  creator: "TezYoz Team",
+  publisher: "TezYoz",
+  metadataBase: new URL("https://tezyoz.uz"), //domain
+  alternates: {
+    canonical: "https://tezyoz.uz",
+  },
+  openGraph: {
+    title: "TezYoz - Tez yozish testi",
+    description:
+      "Zamonaviy tez yozish testi ilovasi reyting va batafsil statistika bilan. O‘zingizni sinab ko‘ring!",
+    url: "https://tezyoz.uz",
+    siteName: "TezYoz",
+    images: [
+      {
+        url: "/keyboard-o.png", // ✅ replace with your actual image
+        width: 1200,
+        height: 630,
+        alt: "TezYoz - Tez yozish testi ilovasi",
+      },
+    ],
+    locale: "uz_UZ",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TezYoz - Tez yozish testi",
+    description:
+      "Zamonaviy tez yozish testi ilovasi reyting va batafsil statistika bilan.",
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: "/keyboard.png",
+    shortcut: "/keyboard.png",
+    apple: "/keyboard.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  generator: "Next.js",
+  category: "Typing Test",
+};
+
 
 export default function RootLayout({
   children,
