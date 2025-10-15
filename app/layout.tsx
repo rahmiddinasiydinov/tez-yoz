@@ -141,6 +141,7 @@ export default function RootLayout({
           `}
         </Script>
         <meta name="yandex-verification" content="78d52e227473b116" />
+        <meta name="yandex-verification" content="3629b58c537ea0c4" />
         {/* Optional fallback for no-JS users */}
         <noscript>
           <div>
