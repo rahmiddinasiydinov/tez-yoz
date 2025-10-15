@@ -7,6 +7,7 @@ import { AuthProvider } from "@/lib/auth-context"
 import { SettingsProvider } from "@/lib/settings-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import Script from "next/script"
+import { Analytics } from "@vercel/analytics/next"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -139,7 +140,7 @@ export default function RootLayout({
             });
           `}
         </Script>
-        <meta name="yandex-verification" content="78d52e227473b116"/>
+        <meta name="yandex-verification" content="78d52e227473b116" />
         {/* Optional fallback for no-JS users */}
         <noscript>
           <div>
@@ -158,6 +159,7 @@ export default function RootLayout({
               <SettingsProvider>
                 <div className="min-h-screen bg-background text-foreground">
                   {children}
+                  <Analytics />
                 </div>
               </SettingsProvider>
             </AuthProvider>
