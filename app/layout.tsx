@@ -96,6 +96,7 @@ export default function RootLayout({
   return (
     <html lang="uz" className={`${spaceGrotesk.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
+
         {/* Google Analytics  */}
         <Script
           async
@@ -138,7 +139,7 @@ export default function RootLayout({
             });
           `}
         </Script>
-
+        <meta name="yandex-verification" content="78d52e227473b116"/>
         {/* Optional fallback for no-JS users */}
         <noscript>
           <div>

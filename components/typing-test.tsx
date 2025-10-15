@@ -251,17 +251,23 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
 
     for (let i = 0; i < text.length; i++) {
       let className = "text-muted-foreground"
+      let cursorClass = "absolute -left-[1px] before:border-l-2 before:animate-cursor"
 
       if (i < inputLength) {
         className = userInput[i] === text[i] ? "text-green-500 bg-green-500/10" : "text-red-500 bg-red-500/10"
+        cursorClass += " hidden"
       } else if (i === inputLength) {
-        className = "bg-accent text-accent-foreground animate-pulse"
+        className = "bg-accent text-accent-foreground"
+        cursorClass += " inline-block"
+      } else {
+        cursorClass += " hidden"
       }
 
-      className += " text-[24px]"
+      className += " text-[24px] relative"
 
       chars.push(
         <span key={i} className={className}>
+          <span className={cursorClass}></span>
           {text[i]}
         </span>,
       )
@@ -315,7 +321,7 @@ export function TypingTest({ testType = "time", testValue = 30, language = "uzbe
           <div className="relative">
             <div
               className="text-sm sm:text-base lg:text-lg leading-relaxed font-mono p-3 sm:p-4 lg:p-6 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/20 min-h-[150px] sm:min-h-[200px] cursor-text overflow-hidden text-10"
-              onClick={(e) => { inputRef.current?.focus(); setIsInputFocused(true)}}
+              onClick={(e) => { inputRef.current?.focus(); setIsInputFocused(true) }}
             >
               {renderText()}
             </div>
