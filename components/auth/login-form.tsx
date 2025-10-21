@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
+import { useI18n } from "@/lib/i18n-context"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -20,6 +21,7 @@ export function LoginForm() {
   const [error, setError] = useState("")
   const { login, isLoading } = useAuth()
   const router = useRouter()
+  const { t } = useI18n()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,17 +36,17 @@ export function LoginForm() {
 
     if (result.success) {
       router.push("/")
-      toast.success('Logged in!')
+      toast.success(t('loggedIn'))
     } else {
       setError(result.error || "Login failed")
-      toast.error('Login failed.')
+      toast.error(t('loginFailed'))
     }
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle className="capitalize">{t('signin')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -54,22 +56,22 @@ export function LoginForm() {
             </Alert>
           )}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email capitalize">{t('email')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('enterYourEmail')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password capitalize">{t('password')}</Label>
             <Input
               id="password"
               type="password"
-              placeholder="Enter your password"
+              placeholder={t('enterYourPassword')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
@@ -79,17 +81,17 @@ export function LoginForm() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing In...
+               {t('signingIn')}
               </>
             ) : (
-              "Sign In"
+              t('signin')
             )}
           </Button>
         </form>
         <p className="text-center text-sm text-muted-foreground mt-4">
-          Don't have an account?{" "}
+          {t('dontHaveAnAccount')}{" "}
           <Link href="/signup" className="text-primary hover:underline">
-            Sign up
+            {t('signup')}
           </Link>
         </p>
       </CardContent>

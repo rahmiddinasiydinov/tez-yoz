@@ -31,12 +31,12 @@ export default function TestResults({ result, onRestart }: TestResultsProps) {
         result.userId = user?.id
         const response = await saveTesResult(result)
         if (response.success) {
-          toast.success(response.message)
+          toast.success(t('resultSuccessfullySaved'))
         } else {
           if (!response.status || response.status !== 401) {
-            toast.error(response.message || 'Unexpected error happened')
+            toast.error(response.message || t('unexpectedErrorOccurred'))
           } else {
-            toast.warning('Please log in to save your results!')
+            toast.warning(t('pleaseLoginToSaveResults'))
           }
         }
         setIsSaved(true)

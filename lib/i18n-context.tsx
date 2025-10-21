@@ -7,6 +7,37 @@ import safeStorage from "./safe-storage"
 type Language = "uz" | "en" | "ru"
 
 interface Translations {
+  // Signup & Login 
+  welcomeBack: string,
+  signInToTrack: string,
+  enterYourEmail: string,
+  enterYourPassword: string,
+  signin: string,
+  dontHaveAnAccount: string,
+  signingIn: string,
+  joinTheCommunity: string,
+  createAccountToSave: string,
+  chooseUsername: string,
+  createPassword: string,
+  confirmYourPassword: string,
+  verifyYourEmail: string,
+  verificationCode: string,
+  enterVerificationCode: string,
+  weSentCodeToEmail: string,
+  enterItBelowToVerify: string,
+  verify: string,
+  creatingAccount: string,
+  verifying: string,
+  loginFailed: string,
+  signupFailed: string,
+  verificationFailed: string,
+  loggedOut: string,
+  errorHappenedWhileLoggingOut: string,
+  registered: string,
+  loggedIn: string,
+  pleaseLoginToSaveResults: string,
+  unexpectedErrorOccurred: string,
+
   // Navigation
   test: string
   leaderboard: string
@@ -169,6 +200,13 @@ interface Translations {
   tests: string
   yourRanking: string
 
+  // Others
+  couldntSendResults: string,
+  resultSuccessfullySaved: string,
+  testModeNotFound: string,
+  errorInFetchingGameModeDate: string,
+  sorryWeCouldntSaveResults: string,
+  resultIsBeingSaved: string,
   // Languages
   "language.uzbek": string
   "language.english": string
@@ -180,6 +218,37 @@ interface Translations {
 
 const translations: Record<Language, Translations> = {
   uz: {
+    // Signup & Login
+    welcomeBack: "Qaytganingizdan xursandmiz!",
+    signInToTrack: "Yozish tezligingizni kuzatishni boshlash uchun tizimga kiring",
+    enterYourEmail: "Emailingizni kiriting",
+    enterYourPassword: "Parolingizni kiriting",
+    signin: "Kirish",
+    dontHaveAnAccount: "Hisobingiz yo'qmi?",
+    signingIn: "Kirilmoqda...",
+    joinTheCommunity: "Jamoamizga qo'shiling",
+    createAccountToSave: "Yozish natijalaringizni saqlash uchun hisob yarating",
+    chooseUsername: "Foydalanuvchi nomini tanlang",
+    createPassword: "Parol yarating",
+    confirmYourPassword: "Parolingizni tasdiqlang",
+    verifyYourEmail: "Emailingizni tasdiqlang",
+    verificationCode: "Tasdiqlash kodi",
+    enterVerificationCode: "Tasdiqlash kodini kiriting",
+    weSentCodeToEmail: "Biz tasdiqlash kodini quyidagi emailingizga yubordik",
+    enterItBelowToVerify: "Tasdiqlash uchun uni quyida kiriting",
+    verify: "Tasdiqlash",
+    creatingAccount: "Hisob yaratilmoqda...",
+    verifying: "Ko'rib chiqilmoqda...",
+    loginFailed: "Kirish muvaffaqiyatsiz.",
+    signupFailed: "Ro'yxatdan o'tish muvaffaqiyatsiz.",
+    verificationFailed: "Tasdiqlash muvaffaqiyatsiz.",
+    errorHappenedWhileLoggingOut: "Chiqish paytida xatolik yuz berdi.",
+    loggedOut: "Tizimdan chiqdingiz!",
+    registered: "Ro'yxatdan o'tdingiz!",
+    loggedIn: "Tizimga kirdingiz!",
+    pleaseLoginToSaveResults: "Natijalarni saqlash uchun tizimga kiring!",
+    unexpectedErrorOccurred: "Kutilmagan xatolik yuz berdi.",
+
     // Navigation
     test: "Test",
     leaderboard: "Reyting",
@@ -345,6 +414,14 @@ const translations: Record<Language, Translations> = {
     tests: "testlar",
     yourRanking: "Sizning reytingingiz",
 
+    //Others
+    couldntSendResults: "Natijalarni yuborib bo'lmadi",
+    resultSuccessfullySaved: "Natijalar muvaffaqiyatli saqlandi!",
+    testModeNotFound: "Test rejimi topilmadi",
+    errorInFetchingGameModeDate: "O'yin rejimi ma'lumotlarini olishda xatolik yuz berdi",
+    sorryWeCouldntSaveResults: "Kechirasiz, natijalarni saqlab bo'lmadi",
+    resultIsBeingSaved: "Natijalar saqlanmoqda...",
+
     // Languages
     "language.uzbek": "O'zbek",
     "language.english": "Ingliz",
@@ -354,6 +431,37 @@ const translations: Record<Language, Translations> = {
     "language.german": "Nemis",
   },
   en: {
+    // Signup & Login
+    welcomeBack: "Welcome back!",
+    signInToTrack: "Sign in to track your progress",
+    enterYourEmail: "Enter your email",
+    enterYourPassword: "Enter your password",
+    signin: "Sign In",
+    dontHaveAnAccount: "Don't have an account?",
+    signingIn: "Signing in...",
+    joinTheCommunity: "Join the Community",
+    createAccountToSave: "Create an account to save your results",
+    chooseUsername: "Choose a username",
+    createPassword: "Create a password",
+    confirmYourPassword: "Confirm your password",
+    verifyYourEmail: "Verify your email",
+    verificationCode: "Verification code",
+    enterVerificationCode: "Enter the verification code",
+    weSentCodeToEmail: "We sent a verification code to your email",
+    enterItBelowToVerify: "Enter it below to verify",
+    verify: "Verify",
+    creatingAccount: "Creating account...",
+    verifying: "Verifying...",
+    loginFailed: "Login failed.",
+    signupFailed: "Signup failed.",
+    verificationFailed: "Verification failed.",
+    errorHappenedWhileLoggingOut: "An error occurred while logging out.",
+    loggedOut: "Logged out!",
+    registered: "You have registered!",
+    loggedIn: "Logged in!",
+    pleaseLoginToSaveResults: "Please log in to save your results!",
+    unexpectedErrorOccurred: "An unexpected error occurred.",
+
     // Navigation
     test: "Test",
     leaderboard: "Leaderboard",
@@ -516,6 +624,14 @@ const translations: Record<Language, Translations> = {
     tests: "tests",
     yourRanking: "Your Ranking",
 
+    //Others
+    couldntSendResults: "Could not send results",
+    resultSuccessfullySaved: "Result is successfully saved!",
+    testModeNotFound: "Test mode is not found",
+    errorInFetchingGameModeDate: "Error in fetching game mode data!",
+    sorryWeCouldntSaveResults: "Sorry, we could not save result.",
+    resultIsBeingSaved: "Result is being saved...",
+
     // Languages
     "language.uzbek": "Uzbek",
     "language.english": "English",
@@ -525,6 +641,37 @@ const translations: Record<Language, Translations> = {
     "language.german": "German",
   },
   ru: {
+    // Signup & Login
+    welcomeBack: "С возвращением!",
+    signInToTrack: "Войдите, чтобы отслеживать свой прогресс",
+    enterYourEmail: "Введите ваш email",
+    enterYourPassword: "Введите ваш пароль",
+    signin: "Войти",
+    dontHaveAnAccount: "Нет аккаунта?",
+    signingIn: "Вход...",
+    joinTheCommunity: "Присоединяйтесь к сообществу",
+    createAccountToSave: "Создайте аккаунт, чтобы сохранять свои результаты",
+    chooseUsername: "Выберите имя пользователя",
+    createPassword: "Создайте пароль",
+    confirmYourPassword: "Подтвердите ваш пароль",
+    verifyYourEmail: "Подтвердите ваш email",
+    verificationCode: "Код подтверждения",
+    enterVerificationCode: "Введите код подтверждения",
+    weSentCodeToEmail: "Мы отправили код подтверждения на ваш email",
+    enterItBelowToVerify: "Введите его ниже для подтверждения",
+    verify: "Подтвердить",
+    creatingAccount: "Создание аккаунта...",
+    verifying: "Подтверждение...",
+    loginFailed: "Ошибка входа.",
+    signupFailed: "Ошибка регистрации.",
+    verificationFailed: "Ошибка подтверждения.",
+    errorHappenedWhileLoggingOut: "Произошла ошибка при выходе из системы.",
+    loggedOut: "Вы вышли из системы!",
+    registered: "Вы зарегистрированы!",
+    loggedIn: "Вы вошли в систему!",
+    pleaseLoginToSaveResults: "Пожалуйста, войдите, чтобы сохранить ваши результаты!",
+    unexpectedErrorOccurred: "Произошла непредвиденная ошибка.",
+
     // Navigation
     test: "Тест",
     leaderboard: "Рейтинг",
@@ -690,6 +837,13 @@ const translations: Record<Language, Translations> = {
     challengeYourselfWithLongerTests: "Бросьте себе вызов более длинными тестами для развития выносливости",
     tests: "тестов",
     yourRanking: "Ваш рейтинг",
+    //Others
+    couldntSendResults: "Не удалось отправить результаты",
+    resultSuccessfullySaved: "Результат успешно сохранен!",
+    testModeNotFound: "Режим теста не найден",
+    errorInFetchingGameModeDate: "Ошибка при получении данных режима игры!",
+    sorryWeCouldntSaveResults: "Извините, мы не смогли сохранить результат.",
+    resultIsBeingSaved: "Результат сохраняется...",
 
     // Languages
     "language.uzbek": "Узбекский",
