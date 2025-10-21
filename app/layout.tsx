@@ -70,9 +70,9 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   icons: {
-    icon: "/keyboard.png",
-    shortcut: "/keyboard.png",
-    apple: "/keyboard.png",
+    icon: "/tLetter.svg",
+    shortcut: "/tLetter.svg",
+    apple: "/tLetter.svg",
   },
   robots: {
     index: true,
