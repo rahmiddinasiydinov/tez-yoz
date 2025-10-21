@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     "TezYoz — bu tez yozish mahoratingizni sinovdan o‘tkazadigan interaktiv o‘yin! Reyting, natijalar va doimiy rivojlanish uchun mukammal joy.",
   keywords: [
     "tez yozish",
+    "tez ter o'rini",
     "tez yozish testi",
     "typing test",
     "typing speed",
