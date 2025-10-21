@@ -1,13 +1,17 @@
+'use client';
+
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import { useI18n } from '@/lib/i18n-context';
 
 interface SavingIndicatorProps {
   isVisible: boolean;
 }
 
 export const SavingResultsIndicator: React.FC<SavingIndicatorProps> = ({ isVisible }) => {
+  const { t } = useI18n();
   return (
     <AnimatePresence>
       {isVisible && (
@@ -35,7 +39,7 @@ export const SavingResultsIndicator: React.FC<SavingIndicatorProps> = ({ isVisib
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 className="text-sm font-medium text-foreground"
               >
-                Result is being saved...
+                {t('resultIsBeingSaved')}
               </motion.span>
             </div>
           </Card>

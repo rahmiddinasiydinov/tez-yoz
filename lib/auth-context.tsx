@@ -10,6 +10,7 @@ import useSWR from 'swr'
 import { UserProfileResponse } from "./profile"
 import { toast } from "sonner"
 import { mutate } from "swr"
+import { useI18n } from "./i18n-context"
 
 export type User = NonNullable<UserProfileResponse['data']>
 
@@ -37,6 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false);
+  const { t } = useI18n()
 
   let user: User | null = null
   const [token, setToken] = useState<string | null>(null)
@@ -69,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return { success: false }
     } catch (error) {
-      let message = "Login failed."
+      let message = t('loginFailed')
       if (error instanceof Error) {
         message = error.message
       }
@@ -89,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await registerAction(username, email, password)
       return { success: true }
     } catch (e: any) {
-      const message = e?.message || "Signup failed"
+      const message = e?.message || t('signupFailed')
       return { success: false, error: message }
     } finally {
       setIsLoading(false)
@@ -107,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mutate('/api/profile')
       return { success: true }
     } catch (e: any) {
-      const message = e?.message || "Verification failed"
+      const message = e?.message || t('verificationFailed')
       return { success: false, error: message }
     } finally {
       setIsLoading(false)
@@ -121,10 +123,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
     if (data.success) {
-      toast.success('Logged out!')
+      toast.success(t('loggedOut'))
       mutate('/api/profile')
     } else {
-      toast.error('Error happened with logging out.')
+      toast.error(t('errorHappenedWhileLoggingOut'))
     }
 
   }, [])
