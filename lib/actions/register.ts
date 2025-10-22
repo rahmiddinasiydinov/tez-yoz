@@ -27,9 +27,9 @@ export async function registerAction(username:string, email: string, password: s
   const data: RegisterResponse = isJson ? await res.json() : await res.text();
   if (!res.ok) {
     const message = isJson
-      ? (data?.message || 'Registration failed')
+      ? (data?.statusCode || 'Registration failed')
       : (typeof data === 'string' ? data : 'Registration failed');
-    throw new Error(message);
+    throw new Error(message as string);
   }
 
   return data;
