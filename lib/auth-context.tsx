@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error instanceof Error) {
         message = error.message
       }
-      return { success: false, error: message }
+      return { success: false, error: Number(message)===401 ? t('invalidEmailOrPassword') : message }
     } finally {
       setIsLoading(false)
     }
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { success: true }
     } catch (e: any) {
       const message = e?.message || t('signupFailed')
-      return { success: false, error: message }
+      return { success: false, error: Number(message)===409 ? t('userAlreadyExists') : message }
     } finally {
       setIsLoading(false)
     }
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { success: true }
     } catch (e: any) {
       const message = e?.message || t('verificationFailed')
-      return { success: false, error: message }
+      return { success: false, error: Number(message)===400 ? t('verificationFailed') : message }
     } finally {
       setIsLoading(false)
     }

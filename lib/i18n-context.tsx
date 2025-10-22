@@ -37,7 +37,8 @@ interface Translations {
   loggedIn: string,
   pleaseLoginToSaveResults: string,
   unexpectedErrorOccurred: string,
-
+  invalidEmailOrPassword: string,
+  userAlreadyExists: string,
   // Navigation
   test: string
   leaderboard: string
@@ -248,6 +249,8 @@ const translations: Record<Language, Translations> = {
     loggedIn: "Tizimga kirdingiz!",
     pleaseLoginToSaveResults: "Natijalarni saqlash uchun tizimga kiring!",
     unexpectedErrorOccurred: "Kutilmagan xatolik yuz berdi.",
+    invalidEmailOrPassword: "Email yoki parol noto‘g‘ri.",
+    userAlreadyExists: "Foydalanuvchi allaqachon mavjud.",
 
     // Navigation
     test: "Test",
@@ -461,7 +464,8 @@ const translations: Record<Language, Translations> = {
     loggedIn: "Logged in!",
     pleaseLoginToSaveResults: "Please log in to save your results!",
     unexpectedErrorOccurred: "An unexpected error occurred.",
-
+    invalidEmailOrPassword: "Invalid email or password.",
+    userAlreadyExists: "User already exists.",
     // Navigation
     test: "Test",
     leaderboard: "Leaderboard",
@@ -671,6 +675,8 @@ const translations: Record<Language, Translations> = {
     loggedIn: "Вы вошли в систему!",
     pleaseLoginToSaveResults: "Пожалуйста, войдите, чтобы сохранить ваши результаты!",
     unexpectedErrorOccurred: "Произошла непредвиденная ошибка.",
+    invalidEmailOrPassword: "Неверный email или пароль.",
+    userAlreadyExists: "Пользователь уже существует.",
 
     // Navigation
     test: "Тест",

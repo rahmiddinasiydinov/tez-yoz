@@ -30,7 +30,7 @@ export async function verifyAction(email: string, code: string) {
 
   if (!res.ok) {
     const message = isJson
-      ? data?.message || data?.error || "Verification failed"
+      ? data?.statusCode || data?.error || "Verification failed"
       : typeof data === "string"
       ? data
       : "Verification failed";

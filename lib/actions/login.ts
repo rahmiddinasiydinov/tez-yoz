@@ -29,11 +29,11 @@ export async function loginAction(email: string, password: string) {
   const data: LoginResponse = isJson ? await res.json() : await res.text();
   if (!res.ok) {
     const message = isJson
-      ? data?.message || "Login failed"
+      ? data?.statusCode || "Login failed"
       : typeof data === "string"
       ? data
       : "Login failed";
-    throw new Error(message);
+    throw new Error(message as string);
   }
   if (data.data?.accessToken) {
     cookieStore.set("access_token", data.data?.accessToken, {
