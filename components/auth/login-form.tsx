@@ -28,7 +28,7 @@ export function LoginForm() {
     setError("")
 
     if (!email || !password) {
-      setError("Please fill in all fields")
+      setError(t('pleaseFillInAllFields'))
       return
     }
 
@@ -38,7 +38,7 @@ export function LoginForm() {
       router.push("/")
       toast.success(t('loggedIn'))
     } else {
-      setError(result.error || "Login failed")
+      setError(Number(result.statusCode)===401 ? t('invalidEmailOrPassword') : result.error || "Login failed")
       toast.error(t('loginFailed'))
     }
   }

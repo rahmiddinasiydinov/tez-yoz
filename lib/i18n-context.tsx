@@ -39,6 +39,11 @@ interface Translations {
   unexpectedErrorOccurred: string,
   invalidEmailOrPassword: string,
   userAlreadyExists: string,
+  pleaseFillInAllFields: string,
+  passwordsDoNotMatch: string,
+  passwordMustBeAtLeast6CharactersLong: string,
+  usernameMustBeAtLeast3CharactersLong: string,
+  pleaseEnterTheVerificationCode: string,
   // Navigation
   test: string
   leaderboard: string
@@ -251,6 +256,11 @@ const translations: Record<Language, Translations> = {
     unexpectedErrorOccurred: "Kutilmagan xatolik yuz berdi.",
     invalidEmailOrPassword: "Email yoki parol noto‘g‘ri.",
     userAlreadyExists: "Foydalanuvchi allaqachon mavjud.",
+    pleaseFillInAllFields: "Iltimos, barcha maydonlarni to‘liq kiriting.",
+    passwordsDoNotMatch: "Parollar mos emas.",
+    passwordMustBeAtLeast6CharactersLong: "Parol kamida 6 ta belgidan iborat bo‘lishi kerak.",
+    usernameMustBeAtLeast3CharactersLong: "Foydalanuvchi nomi kamida 3 ta belgidan iborat bo‘lishi kerak.",
+    pleaseEnterTheVerificationCode: "Tasdiqlash kodini kiriting.",
 
     // Navigation
     test: "Test",
@@ -466,6 +476,11 @@ const translations: Record<Language, Translations> = {
     unexpectedErrorOccurred: "An unexpected error occurred.",
     invalidEmailOrPassword: "Invalid email or password.",
     userAlreadyExists: "User already exists.",
+    pleaseFillInAllFields: "Please fill in all fields.",
+    passwordsDoNotMatch: "Passwords do not match.",
+    passwordMustBeAtLeast6CharactersLong: "Password must be at least 6 characters long.",
+    usernameMustBeAtLeast3CharactersLong: "Username must be at least 3 characters long.",
+    pleaseEnterTheVerificationCode: "Please enter the verification code.",
     // Navigation
     test: "Test",
     leaderboard: "Leaderboard",
@@ -677,6 +692,12 @@ const translations: Record<Language, Translations> = {
     unexpectedErrorOccurred: "Произошла непредвиденная ошибка.",
     invalidEmailOrPassword: "Неверный email или пароль.",
     userAlreadyExists: "Пользователь уже существует.",
+    pleaseFillInAllFields: "Пожалуйста, заполните все поля.",
+    passwordsDoNotMatch: "Пароли не совпадают.",
+    passwordMustBeAtLeast6CharactersLong: "Пароль должен быть не менее 6 символов.",
+    usernameMustBeAtLeast3CharactersLong: "Имя пользователя должно быть не менее 3 символов.",
+    pleaseEnterTheVerificationCode: "Пожалуйста, введите код подтверждения.",
+
 
     // Navigation
     test: "Тест",
