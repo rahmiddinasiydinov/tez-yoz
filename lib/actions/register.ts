@@ -4,13 +4,13 @@ import {RegisterResponse} from "@/lib/types/auth";
 
 const API = process.env.NEXT_PUBLIC_API
 
-if(!API){
-throw new Error('API is not found in env')
-}
 
 export async function registerAction(username:string, email: string, password: string){
+  if(!API){
+    return { success: false, message: "API is not found in env", statusCode: 500 };
+  }
   if (!username || !email || !password) {
-    throw new Error('Username, email and password are required');
+    return { success: false, message: "Username, email and password are required", statusCode: 400 };
   }
   const base = API
   const res = await fetch(`${base}/api/auth/register`, {
@@ -29,7 +29,7 @@ export async function registerAction(username:string, email: string, password: s
     const message = isJson
       ? (data?.statusCode || 'Registration failed')
       : (typeof data === 'string' ? data : 'Registration failed');
-    throw new Error(message as string);
+    return { success: false, message: message as string, statusCode: data?.statusCode};
   }
 
   return data;

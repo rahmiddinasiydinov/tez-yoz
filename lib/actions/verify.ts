@@ -4,14 +4,14 @@ import { cookies } from "next/headers";
 
 const API = process.env.NEXT_PUBLIC_API;
 
-if (!API) {
-  throw new Error("API is not found in env");
-}
 
 export async function verifyAction(email: string, code: string) {
+  if (!API) {
+    return { success: false, message: "API is not found in env", statusCode: 500 };
+  }
   const cookieStore = await cookies();
   if (!email || !code) {
-    throw new Error("Email and code are required");
+    return { success: false, message: "Email and code are required", statusCode: 400 };
   }
 
   const base = API!.replace(/\/$/, "");
@@ -34,7 +34,7 @@ export async function verifyAction(email: string, code: string) {
       : typeof data === "string"
       ? data
       : "Verification failed";
-    throw new Error(message);
+    return { success: false, message: message as string, statusCode: data?.statusCode};
   }
 
   if (data.data?.accessToken) {

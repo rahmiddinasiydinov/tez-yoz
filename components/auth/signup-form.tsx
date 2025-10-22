@@ -33,22 +33,22 @@ export const SignupForm = memo(function SignupForm() {
 
     if (step === "signup") {
       if (!username || !email || !password || !confirmPassword) {
-        setError("Please fill in all fields")
+        setError(t('pleaseFillInAllFields'))
         return
       }
 
       if (password !== confirmPassword) {
-        setError("Passwords do not match")
+        setError(t('passwordsDoNotMatch'))
         return
       }
 
       if (password.length < 6) {
-        setError("Password must be at least 6 characters long")
+        setError(t('passwordMustBeAtLeast6CharactersLong'))
         return
       }
 
       if (username.length < 3) {
-        setError("Username must be at least 3 characters long")
+        setError(t('usernameMustBeAtLeast3CharactersLong'))
         return
       }
 
@@ -56,11 +56,11 @@ export const SignupForm = memo(function SignupForm() {
       if (result.success) {
         setStep("verify")
       } else {
-        setError(result.error || t('signupFailed'))
+        setError(result.statusCode===409 ? t('userAlreadyExists') : result.error || t('signupFailed'))
       }
     } else {
       if (!email || !code) {
-        setError("Please enter the verification code")
+        setError(t('pleaseEnterTheVerificationCode'))
         return
       }
       const result = await verify(email, code)
@@ -68,7 +68,7 @@ export const SignupForm = memo(function SignupForm() {
         router.push("/")
         toast.success(t('registered'))
       } else {
-        setError(result.error || "Verification failed")
+        setError(result.statusCode===400 ? t('verificationFailed') : result.error || t('signupFailed'))
         toast.error(t('signupFailed'))
       }
     }

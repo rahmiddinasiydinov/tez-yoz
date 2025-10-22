@@ -5,14 +5,14 @@ import { cookies } from "next/headers";
 
 const API = process.env.NEXT_PUBLIC_API;
 
-if (!API) {
-  throw new Error("API is not found in env");
-}
 
 export async function loginAction(email: string, password: string) {
+  if (!API) {
+    return { success: false, message: "API is not found in env", statusCode: 500 };
+  }
   const cookieStore = await cookies();
   if (!email || !password) {
-    throw new Error("Email and password are required");
+    return { success: false, message: "Email and password are required", statusCode: 400 };
   }
   const base = API;
   const res = await fetch(`${base}/api/auth/login`, {
@@ -29,11 +29,11 @@ export async function loginAction(email: string, password: string) {
   const data: LoginResponse = isJson ? await res.json() : await res.text();
   if (!res.ok) {
     const message = isJson
-      ? data?.statusCode || "Login failed"
+      ? data?.message || "Login failed"
       : typeof data === "string"
       ? data
       : "Login failed";
-    throw new Error(message as string);
+    return  { success: false, error: message as string, statucCode: data?.statusCode};
   }
   if (data.data?.accessToken) {
     cookieStore.set("access_token", data.data?.accessToken, {

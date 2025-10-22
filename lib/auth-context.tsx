@@ -16,9 +16,9 @@ export type User = NonNullable<UserProfileResponse['data']>
 
 interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  signup: (username: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  verify: (email: string, code: string) => Promise<{ success: boolean; error?: string; token?: string }>
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string, statusCode?: number }>
+  signup: (username: string, email: string, password: string) => Promise<{ success: boolean; error?: string, statusCode?: number }>
+  verify: (email: string, code: string) => Promise<{ success: boolean; error?: string; token?: string, statusCode?: number }>
   logout: () => void
   isLoading: boolean
   token: string | null
@@ -59,17 +59,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   }
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string, statusCode?: number }> => {
     setIsLoading(true)
 
     try {
       const res = await loginAction(email, password)
-      if (res.token) {
+      if (res?.token) {
         setToken(res.token)
         mutate('/api/profile')
         return { success: true }
       }
-      return { success: false }
+      
+      return {success: false, error: res?.error, statusCode: res?.statucCode}
     } catch (error) {
       let message = t('loginFailed')
       if (error instanceof Error) {
@@ -85,11 +86,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     username: string,
     email: string,
     password: string,
-  ): Promise<{ success: boolean; error?: string }> => {
+  ): Promise<{ success: boolean; error?: string, statusCode?: number }> => {
     setIsLoading(true)
     try {
-      await registerAction(username, email, password)
-      return { success: true }
+      const res =  await registerAction(username, email, password)
+      if (res?.success) {
+      return { success: true, statusCode: 201 }
+      }
+      return {success: false, error: res?.message, statusCode: res?.statusCode}
     } catch (e: any) {
       const message = e?.message || t('signupFailed')
       return { success: false, error: Number(message)===409 ? t('userAlreadyExists') : message }
@@ -98,13 +102,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  const verify = useCallback(async (email: string, code: string): Promise<{ success: boolean; error?: string }> => {
+  const verify = useCallback(async (email: string, code: string): Promise<{ success: boolean; error?: string, statusCode?: number }> => {
     setIsLoading(true)
     try {
       const res: any = await verifyAction(email, code)
       // Try common token locations
       if (res.token) {
         setToken(res.token)
+      } else {
+        return { success: false, error: res?.message, statusCode: res?.statusCode }
       }
       mutate('/api/profile')
       return { success: true }
